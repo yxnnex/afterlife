@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Precios Afterlife - Calculadora</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --accent-color: #bb86fc;
+            --accent-hover: #3700b3;
+            --border-color: #333;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1, h2 {
+            text-align: center;
+            color: var(--accent-color);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        th {
+            color: var(--accent-color);
+        }
+        input[type="number"] {
+            width: 60px;
+            padding: 5px;
+            background: #2a2a2a;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .total-section {
+            background-color: var(--card-bg);
+            border: 2px solid var(--accent-color);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .total-amount {
+            font-size: 2rem;
+            color: #03dac6;
+            font-weight: bold;
+        }
+        .btn {
+            background-color: var(--accent-color);
+            color: #121212;
+            border: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            background-color: #03dac6;
+        }
+        .note {
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-top: 15px;
+            text-align: center;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>PRECIOS AFTERLIFE</h1>
+    
+    <div class="grid">
+        <!-- Lista de Precios Estática -->
+        <div class="card">
+            <h2>Lista de Precios</h2>
+            <table>
+                <tr><th>Concepto</th><th>Precio</th></tr>
+                <tr><td>Reparación básica (1 motor, 3 carrocería)</td><td>$150</td></tr>
+                <tr><td>Reparación full</td><td>$1000</td></tr>
+                <tr><td>Ganzúa normal</td><td>$350</td></tr>
+                <tr><td>Ganzúa avanzada (Materiales +)</td><td>$500</td></tr>
+                <tr><td>Kit de placas</td><td>Placa vieja + propina</td></tr>
+                <tr><td>Paño de microfibra</td><td>$150</td></tr>
+                <tr><td>Kit de reparación normal</td><td>$250</td></tr>
+                <tr><td>Kit de reparación avanzado</td><td>$700</td></tr>
+                <tr><td>Gato</td><td>$300</td></tr>
+                <tr><td>Neumáticos de drift/normales (c/u)</td><td>$350</td></tr>
+                <tr><td>Puertas, neumático, capot, baúl (c/u)</td><td>$30</td></tr>
+                <tr><td>Piezas separadas (c/u) <br><small>embrague, radiador, tanque, frenos, transmisión</small></td><td>$300</td></tr>
+            </table>
+        </div>
+
+        <!-- Calculadora de Totales -->
+        <div class="card">
+            <h2>Calculadora de Cobro</h2>
+            <p>Selecciona la cantidad de cada ítem que lleva el cliente:</p>
+            <table>
+                <tr>
+                    <th>Ítem</th>
+                    <th>Precio</th>
+                    <th>Cant.</th>
+                </tr>
+                <tr>
+                    <td>Rep. Básica</td>
+                    <td>$150</td>
+                    <td><input type="number" class="item-calc" data-price="150" value="0" min="0"></td>
+                </tr>
+                <tr>
+                    <td>Rep. Full</td>
+                    <td>$1000</td>
+                    <td><input type="number" class="item-calc" data-price="1000" value="0" min="0"></td>
+                </tr>
+                <tr>
+                    <td>Ganzúa Normal</td>
+                    <td>$350</td>
+                    <td><input type="number" class="item-calc" data-price="350" value="0" min="0"></td>
+                </tr>
+                <tr>
+                    <td>Ganzúa Avanzada</td>
+                    <td>$500</td>
+                    <td><input type="number" class="item-calc" data-price="500" value="0" min="0"></td>
+                </tr>
+                <tr>
+                    <td>Paño Microfibra</td>
+                    <td>$150</td>
+                    <td><input type="number" class="item-calc" data-price="150" value="0" min="0"></td>
+                </tr>
+                <tr>
+                    <td>Kit Rep. Normal</td>
+                    <td>$250</td>
+                    <td><input type="number" class="item-calc" data-price="250" value="0" min="0"></td>
+                </tr>
+                <tr>
+                    <td>Kit Rep. Avanzado</td>
+                    <td>$700</td>
+                    <td><input type="number" class="item-calc" data-price="700" value="0" min="0"></td>
+                </tr>
+                <tr>
+                    <td>Gato</td>
+                    <td>$300</td>
+                    <td><input type="number" class="item-calc" data-price="300" value="0" min="0"></td>
+                </tr>
+                <tr>
+                    <td>Neumáticos Drift/Norm.</td>
+                    <td>$350</td>
+                    <td><input type="number" class="item-calc" data-price="350" value="0" min="0"></td>
+                </tr>
+                <tr>
+                    <td>Puerta / Capot / Baúl / Neum.</td>
+                    <td>$30</td>
+                    <td><input type="number" class="item-calc" data-price="30" value="0" min="0"></td>
+                </tr>
+                <tr>
+                    <td>Piezas Separadas (Embrague, etc.)</td>
+                    <td>$300</td>
+                    <td><input type="number" class="item-calc" data-price="300" value="0" min="0"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Sección del Total -->
+    <div class="total-section">
+        <h3>Total a Transferir / Cobrar</h3>
+        <div class="total-amount" id="totalDisplay">$0</div>
+        <button class="btn" onclick="resetForm()">Reiniciar</button>
+    </div>
+
+    <div class="note">
+        (Todo lo que no sea tuning lo cobran a su cuenta, o sea les transfieren los clientes)
+    </div>
+</div>
+
+<script>
+    const inputs = document.querySelectorAll('.item-calc');
+    const totalDisplay = document.getElementById('totalDisplay');
+
+    function calculateTotal() {
+        let total = 0;
+        inputs.forEach(input => {
+            const price = parseFloat(input.dataset.price) || 0;
+            const quantity = parseInt(input.value) || 0;
+            total += price * quantity;
+        });
+        totalDisplay.textContent = '$' + total.toLocaleString();
+    }
+
+    inputs.forEach(input => {
+        input.addEventListener('input', calculateTotal);
+    });
+
+    function resetForm() {
+        inputs.forEach(input => {
+            input.value = 0;
+        });
+        calculateTotal();
+    }
+</script>
+
+</body>
+</html>
