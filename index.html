@@ -6,23 +6,49 @@
     <title>Precios Afterlife y Control de Horas</title>
     <style>
         :root {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
+            --card-bg: rgba(30, 30, 30, 0.85); /* Ligeramente translúcido para que luzca el fondo */
             --text-color: #e0e0e0;
             --accent-color: #bb86fc;
             --accent-hover: #3700b3;
             --border-color: #333;
         }
+
+        /* --- FONDO DINÁMICO --- */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
             padding: 20px;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0d0d0d, #1a1a2e, #16213e, #0f3460);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+            position: relative;
+            overflow-x: hidden;
         }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Efecto de partículas/luces flotantes en el fondo */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(circle, rgba(187, 134, 252, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+            opacity: 0.5;
+        }
+
         .container {
             max-width: 1100px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
         h1, h2 {
             text-align: center;
@@ -30,6 +56,7 @@
         }
         h1 {
             margin-bottom: 25px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
         .main-grid {
             display: grid;
@@ -50,10 +77,11 @@
         }
         .card {
             background-color: var(--card-bg);
+            backdrop-filter: blur(8px);
             border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             margin-bottom: 20px;
         }
         table {
@@ -73,7 +101,7 @@
         input[type="number"] {
             width: 50px;
             padding: 4px;
-            background: #2a2a2a;
+            background: rgba(42, 42, 42, 0.9);
             border: 1px solid var(--border-color);
             color: #fff;
             border-radius: 4px;
@@ -81,6 +109,7 @@
         }
         .total-section {
             background-color: var(--card-bg);
+            backdrop-filter: blur(8px);
             border: 2px solid var(--accent-color);
             border-radius: 8px;
             padding: 20px;
@@ -92,6 +121,7 @@
             color: #03dac6;
             font-weight: bold;
             margin: 15px 0;
+            text-shadow: 0 0 10px rgba(3, 218, 198, 0.3);
         }
         .timer-display {
             font-size: 2.5rem;
@@ -100,6 +130,7 @@
             text-align: center;
             font-family: monospace;
             margin: 15px 0;
+            text-shadow: 0 0 10px rgba(3, 218, 198, 0.3);
         }
         .btn-group {
             display: flex;
@@ -116,6 +147,7 @@
             font-weight: bold;
             border-radius: 4px;
             cursor: pointer;
+            transition: background 0.2s;
         }
         .btn:hover {
             background-color: #03dac6;
@@ -129,10 +161,11 @@
         }
         .note {
             font-size: 0.85rem;
-            color: #aaa;
+            color: #ccc;
             margin-top: 25px;
             text-align: center;
             font-style: italic;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
         }
     </style>
 </head>
