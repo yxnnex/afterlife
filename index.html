@@ -13,7 +13,6 @@
             --border-color: #333;
         }
 
-        /* --- FONDO DE VIDEO DINÁMICO --- */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: var(--text-color);
@@ -149,6 +148,16 @@
         .btn-danger:hover {
             background-color: #ff8b9e;
         }
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.12);
+            color: #fff;
+            border: 1px solid var(--border-color);
+            padding: 6px 10px;
+            font-size: 0.85rem;
+        }
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+        }
         .note {
             font-size: 0.85rem;
             color: #ccc;
@@ -157,11 +166,36 @@
             font-style: italic;
             text-shadow: 0 1px 3px rgba(0,0,0,0.9);
         }
+        .time-adjust-container {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+        .custom-adjust-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .custom-adjust-box input[type="number"] {
+            width: 65px;
+            padding: 6px;
+        }
+        .custom-adjust-box label {
+            font-size: 0.85rem;
+            color: #aaa;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Video de fondo en bucle -->
     <video autoplay muted loop id="bgVideo">
         <source src="mylivewallpapers-com-Puddle-Cloud-Reflections-FHD.mp4" type="video/mp4">
     </video>
@@ -169,12 +203,8 @@
 <div class="container">
     <h1>PRECIOS AFTERLIFE Y HORAS</h1>
 
-    <!-- SECCIÓN CENTRAL: Precios / Calculadora (Izquierda) y Total (Derecha) -->
     <div class="main-grid">
-        
-        <!-- Columna Izquierda: Precios y Calculadora -->
         <div class="prices-container">
-            <!-- Lista de Precios Estática -->
             <div class="card" style="margin-bottom: 0;">
                 <h2>Lista de Precios</h2>
                 <table>
@@ -194,7 +224,6 @@
                 </table>
             </div>
 
-            <!-- Calculadora de Totales -->
             <div class="card" style="margin-bottom: 0;">
                 <h2>Calculadora de Cobro</h2>
                 <p style="font-size: 0.85rem;">Selecciona la cantidad:</p>
@@ -215,19 +244,35 @@
             </div>
         </div>
 
-        <!-- Columna Derecha: Total y Cronómetro Debajo -->
         <div>
-            <!-- Sección del Total -->
             <div class="total-section card">
                 <h3>Total a Transferir / Cobrar</h3>
                 <div class="total-amount" id="totalDisplay">$0</div>
                 <button class="btn" onclick="resetForm()">Reiniciar Calculadora</button>
             </div>
 
-            <!-- Control de Horas Semanales (Debajo del Total) -->
             <div class="card" style="margin-top: 20px;">
                 <h2>Control de Horas</h2>
-                <div class="timer-display" id="timerDisplay">00:20:00</div>
+                <div class="timer-display" id="timerDisplay">00:00:00</div>
+                
+                <!-- Quick Minute Adjustments -->
+                <div class="time-adjust-container">
+                    <button class="btn btn-secondary" onclick="addMinutes(-15)">-15m</button>
+                    <button class="btn btn-secondary" onclick="addMinutes(-5)">-5m</button>
+                    <button class="btn btn-secondary" onclick="addMinutes(-1)">-1m</button>
+                    <button class="btn btn-secondary" onclick="addMinutes(1)">+1m</button>
+                    <button class="btn btn-secondary" onclick="addMinutes(5)">+5m</button>
+                    <button class="btn btn-secondary" onclick="addMinutes(15)">+15m</button>
+                </div>
+
+                <!-- Custom Minute Input Adjustment -->
+                <div class="custom-adjust-box">
+                    <label for="customMins">Minutos:</label>
+                    <input type="number" id="customMins" value="10" min="1">
+                    <button class="btn btn-secondary" onclick="applyCustomMinutes(1)">+ Sumar</button>
+                    <button class="btn btn-secondary" onclick="applyCustomMinutes(-1)">- Restar</button>
+                </div>
+
                 <div class="btn-group">
                     <button class="btn" id="startBtn" onclick="startTimer()">Iniciar</button>
                     <button class="btn" id="pauseBtn" onclick="pauseTimer()">Pausar</button>
@@ -236,10 +281,8 @@
                 </div>
             </div>
         </div>
-
     </div>
 
-    <!-- SECCIÓN INFERIOR: Historial de Semanas Guardadas -->
     <div class="card" style="margin-top: 30px;">
         <h2>Historial de Horas Acumuladas por Semana</h2>
         <table id="historyTable">
@@ -248,7 +291,6 @@
                 <th>Tiempo Acumulado</th>
                 <th>Acción</th>
             </tr>
-            <!-- Se llena dinámicamente -->
         </table>
     </div>
     
@@ -258,7 +300,6 @@
 </div>
 
 <script>
-    // --- LÓGICA DE PRECIOS ---
     const inputs = document.querySelectorAll('.item-calc');
     const totalDisplay = document.getElementById('totalDisplay');
 
@@ -281,8 +322,7 @@
         calculateTotal();
     }
 
-    // --- LÓGICA DEL CRONÓMETRO Y HORAS ---
-    let seconds = localStorage.getItem('afterlife_seconds') !== null ? parseInt(localStorage.getItem('afterlife_seconds')) : 1200;
+    let seconds = localStorage.getItem('afterlife_seconds') !== null ? parseInt(localStorage.getItem('afterlife_seconds')) : 0;
     let timerInterval = null;
     let isRunning = false;
 
@@ -296,6 +336,20 @@
             (hrs < 10 ? "0" : "") + hrs + ":" +
             (mins < 10 ? "0" : "") + mins + ":" +
             (secs < 10 ? "0" : "") + secs;
+    }
+
+    function addMinutes(mins) {
+        seconds += mins * 60;
+        if (seconds < 0) seconds = 0;
+        localStorage.setItem('afterlife_seconds', seconds);
+        updateTimerDisplay();
+    }
+
+    function applyCustomMinutes(sign) {
+        const val = parseInt(document.getElementById('customMins').value) || 0;
+        if (val > 0) {
+            addMinutes(val * sign);
+        }
     }
 
     function startTimer() {
@@ -321,7 +375,6 @@
         updateTimerDisplay();
     }
 
-    // --- GUARDAR Y SEPARAR POR SEMANA ---
     function loadHistory() {
         let history = JSON.parse(localStorage.getItem('afterlife_history')) || [];
         let table = document.getElementById('historyTable');
@@ -362,7 +415,6 @@
         loadHistory();
     }
 
-    // Inicializar al cargar la página
     updateTimerDisplay();
     loadHistory();
 </script>
