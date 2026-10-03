@@ -21,20 +21,32 @@
             padding: 20px;
         }
         .container {
-            max-width: 900px;
+            max-width: 1100px;
             margin: 0 auto;
         }
         h1, h2 {
             text-align: center;
             color: var(--accent-color);
         }
-        .grid {
+        h1 {
+            margin-bottom: 25px;
+        }
+        .main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+        @media (max-width: 900px) {
+            .main-grid { grid-template-columns: 1fr; }
+        }
+        .prices-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
         }
         @media (max-width: 768px) {
-            .grid { grid-template-columns: 1fr; }
+            .prices-container { grid-template-columns: 1fr; }
         }
         .card {
             background-color: var(--card-bg);
@@ -73,20 +85,21 @@
             border-radius: 8px;
             padding: 20px;
             text-align: center;
-            margin-bottom: 20px;
+            height: fit-content;
         }
         .total-amount {
-            font-size: 2rem;
+            font-size: 2.2rem;
             color: #03dac6;
             font-weight: bold;
+            margin: 15px 0;
         }
         .timer-display {
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             color: #03dac6;
             font-weight: bold;
             text-align: center;
             font-family: monospace;
-            margin: 10px 0;
+            margin: 15px 0;
         }
         .btn-group {
             display: flex;
@@ -117,7 +130,7 @@
         .note {
             font-size: 0.85rem;
             color: #aaa;
-            margin-top: 15px;
+            margin-top: 25px;
             text-align: center;
             font-style: italic;
         }
@@ -128,21 +141,79 @@
 <div class="container">
     <h1>PRECIOS AFTERLIFE Y HORAS</h1>
 
-    <!-- Control de Horas Semanales -->
-    <div class="card">
-        <h2>Control de Horas Semanales</h2>
-        <div class="timer-display" id="timerDisplay">00:20:00</div>
-        <div class="btn-group">
-            <button class="btn" id="startBtn" onclick="startTimer()">Iniciar</button>
-            <button class="btn" id="pauseBtn" onclick="pauseTimer()">Pausar</button>
-            <button class="btn btn-danger" onclick="resetTimer()">Reiniciar</button>
-            <button class="btn" onclick="saveWeek()">Guardar Semana</button>
+    <!-- SECCIÓN CENTRAL: Precios / Calculadora (Izquierda) y Total (Derecha) -->
+    <div class="main-grid">
+        
+        <!-- Columna Izquierda: Precios y Calculadora -->
+        <div class="prices-container">
+            <!-- Lista de Precios Estática -->
+            <div class="card" style="margin-bottom: 0;">
+                <h2>Lista de Precios</h2>
+                <table>
+                    <tr><th>Concepto</th><th>Precio</th></tr>
+                    <tr><td>Reparación básica (1 motor, 3 carrocería)</td><td>$150</td></tr>
+                    <tr><td>Reparación full</td><td>$1000</td></tr>
+                    <tr><td>Ganzúa normal</td><td>$350</td></tr>
+                    <tr><td>Ganzúa avanzada (Materiales +)</td><td>$500</td></tr>
+                    <tr><td>Kit de placas</td><td>Placa vieja + propina</td></tr>
+                    <tr><td>Paño de microfibra</td><td>$150</td></tr>
+                    <tr><td>Kit de reparación normal</td><td>$250</td></tr>
+                    <tr><td>Kit de reparación avanzado</td><td>$700</td></tr>
+                    <tr><td>Gato</td><td>$300</td></tr>
+                    <tr><td>Neumáticos de drift/normales (c/u)</td><td>$350</td></tr>
+                    <tr><td>Puertas, neumático, capot, baúl (c/u)</td><td>$30</td></tr>
+                    <tr><td>Piezas separadas (c/u) <br><small>embrague, radiador, tanque, frenos, transmisión</small></td><td>$300</td></tr>
+                </table>
+            </div>
+
+            <!-- Calculadora de Totales -->
+            <div class="card" style="margin-bottom: 0;">
+                <h2>Calculadora de Cobro</h2>
+                <p style="font-size: 0.85rem;">Selecciona la cantidad:</p>
+                <table>
+                    <tr><th>Ítem</th><th>Precio</th><th>Cant.</th></tr>
+                    <tr><td>Rep. Básica</td><td>$150</td><td><input type="number" class="item-calc" data-price="150" value="0" min="0"></td></tr>
+                    <tr><td>Rep. Full</td><td>$1000</td><td><input type="number" class="item-calc" data-price="1000" value="0" min="0"></td></tr>
+                    <tr><td>Ganzúa Normal</td><td>$350</td><td><input type="number" class="item-calc" data-price="350" value="0" min="0"></td></tr>
+                    <tr><td>Ganzúa Avanzada</td><td>$500</td><td><input type="number" class="item-calc" data-price="500" value="0" min="0"></td></tr>
+                    <tr><td>Paño Microfibra</td><td>$150</td><td><input type="number" class="item-calc" data-price="150" value="0" min="0"></td></tr>
+                    <tr><td>Kit Rep. Normal</td><td>$250</td><td><input type="number" class="item-calc" data-price="250" value="0" min="0"></td></tr>
+                    <tr><td>Kit Rep. Avanzado</td><td>$700</td><td><input type="number" class="item-calc" data-price="700" value="0" min="0"></td></tr>
+                    <tr><td>Gato</td><td>$300</td><td><input type="number" class="item-calc" data-price="300" value="0" min="0"></td></tr>
+                    <tr><td>Neumáticos Drift/Norm.</td><td>$350</td><td><input type="number" class="item-calc" data-price="350" value="0" min="0"></td></tr>
+                    <tr><td>Puerta / Capot / Baúl / Neum.</td><td>$30</td><td><input type="number" class="item-calc" data-price="30" value="0" min="0"></td></tr>
+                    <tr><td>Piezas Separadas</td><td>$300</td><td><input type="number" class="item-calc" data-price="300" value="0" min="0"></td></tr>
+                </table>
+            </div>
         </div>
+
+        <!-- Columna Derecha: Total y Cronómetro Debajo -->
+        <div>
+            <!-- Sección del Total -->
+            <div class="total-section card">
+                <h3>Total a Transferir / Cobrar</h3>
+                <div class="total-amount" id="totalDisplay">$0</div>
+                <button class="btn" onclick="resetForm()">Reiniciar Calculadora</button>
+            </div>
+
+            <!-- Control de Horas Semanales (Debajo del Total) -->
+            <div class="card" style="margin-top: 20px;">
+                <h2>Control de Horas</h2>
+                <div class="timer-display" id="timerDisplay">00:20:00</div>
+                <div class="btn-group">
+                    <button class="btn" id="startBtn" onclick="startTimer()">Iniciar</button>
+                    <button class="btn" id="pauseBtn" onclick="pauseTimer()">Pausar</button>
+                    <button class="btn btn-danger" onclick="resetTimer()">Reiniciar</button>
+                    <button class="btn" onclick="saveWeek()">Guardar Semana</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <!-- Historial de Semanas Guardadas -->
-    <div class="card">
-        <h2>Historial de Semanas</h2>
+    <!-- SECCIÓN INFERIOR: Historial de Semanas Guardadas -->
+    <div class="card" style="margin-top: 30px;">
+        <h2>Historial de Horas Acumuladas por Semana</h2>
         <table id="historyTable">
             <tr>
                 <th>Semana / Fecha</th>
@@ -153,59 +224,6 @@
         </table>
     </div>
     
-    <div class="grid">
-        <!-- Lista de Precios Estática -->
-        <div class="card">
-            <h2>Lista de Precios</h2>
-            <table>
-                <tr><th>Concepto</th><th>Precio</th></tr>
-                <tr><td>Reparación básica (1 motor, 3 carrocería)</td><td>$150</td></tr>
-                <tr><td>Reparación full</td><td>$1000</td></tr>
-                <tr><td>Ganzúa normal</td><td>$350</td></tr>
-                <tr><td>Ganzúa avanzada (Materiales +)</td><td>$500</td></tr>
-                <tr><td>Kit de placas</td><td>Placa vieja + propina</td></tr>
-                <tr><td>Paño de microfibra</td><td>$150</td></tr>
-                <tr><td>Kit de reparación normal</td><td>$250</td></tr>
-                <tr><td>Kit de reparación avanzado</td><td>$700</td></tr>
-                <tr><td>Gato</td><td>$300</td></tr>
-                <tr><td>Neumáticos de drift/normales (c/u)</td><td>$350</td></tr>
-                <tr><td>Puertas, neumático, capot, baúl (c/u)</td><td>$30</td></tr>
-                <tr><td>Piezas separadas (c/u) <br><small>embrague, radiador, tanque, frenos, transmisión</small></td><td>$300</td></tr>
-            </table>
-        </div>
-
-        <!-- Calculadora de Totales -->
-        <div class="card">
-            <h2>Calculadora de Cobro</h2>
-            <p style="font-size: 0.85rem;">Selecciona la cantidad:</p>
-            <table>
-                <tr>
-                    <th>Ítem</th>
-                    <th>Precio</th>
-                    <th>Cant.</th>
-                </tr>
-                <tr><td>Rep. Básica</td><td>$150</td><td><input type="number" class="item-calc" data-price="150" value="0" min="0"></td></tr>
-                <tr><td>Rep. Full</td><td>$1000</td><td><input type="number" class="item-calc" data-price="1000" value="0" min="0"></td></tr>
-                <tr><td>Ganzúa Normal</td><td>$350</td><td><input type="number" class="item-calc" data-price="350" value="0" min="0"></td></tr>
-                <tr><td>Ganzúa Avanzada</td><td>$500</td><td><input type="number" class="item-calc" data-price="500" value="0" min="0"></td></tr>
-                <tr><td>Paño Microfibra</td><td>$150</td><td><input type="number" class="item-calc" data-price="150" value="0" min="0"></td></tr>
-                <tr><td>Kit Rep. Normal</td><td>$250</td><td><input type="number" class="item-calc" data-price="250" value="0" min="0"></td></tr>
-                <tr><td>Kit Rep. Avanzado</td><td>$700</td><td><input type="number" class="item-calc" data-price="700" value="0" min="0"></td></tr>
-                <tr><td>Gato</td><td>$300</td><td><input type="number" class="item-calc" data-price="300" value="0" min="0"></td></tr>
-                <tr><td>Neumáticos Drift/Norm.</td><td>$350</td><td><input type="number" class="item-calc" data-price="350" value="0" min="0"></td></tr>
-                <tr><td>Puerta / Capot / Baúl / Neum.</td><td>$30</td><td><input type="number" class="item-calc" data-price="30" value="0" min="0"></td></tr>
-                <tr><td>Piezas Separadas</td><td>$300</td><td><input type="number" class="item-calc" data-price="300" value="0" min="0"></td></tr>
-            </table>
-        </div>
-    </div>
-
-    <!-- Sección del Total -->
-    <div class="total-section">
-        <h3>Total a Transferir / Cobrar</h3>
-        <div class="total-amount" id="totalDisplay">$0</div>
-        <button class="btn" onclick="resetForm()">Reiniciar Calculadora</button>
-    </div>
-
     <div class="note">
         (Todo lo que no sea tuning lo cobran a su cuenta, o sea les transfieren los clientes)
     </div>
@@ -236,7 +254,6 @@
     }
 
     // --- LÓGICA DEL CRONÓMETRO Y HORAS ---
-    // Si no hay datos guardados previamente, arranca con 1200 segundos (20 minutos)
     let seconds = localStorage.getItem('afterlife_seconds') !== null ? parseInt(localStorage.getItem('afterlife_seconds')) : 1200;
     let timerInterval = null;
     let isRunning = false;
