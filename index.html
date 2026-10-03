@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Afterlife - Control de Horas</title>
+    <title>Precios Afterlife y Control de Horas</title>
     <style>
         :root {
             --card-bg: rgba(20, 20, 25, 0.85);
@@ -13,26 +13,25 @@
             --border-color: #333;
         }
 
-        /* --- FONDO DINÁMICO CON GOTAS DE LLUVIA --- */
+        /* --- FONDO DE VIDEO DINÁMICO --- */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: var(--text-color);
             margin: 0;
             padding: 20px;
             min-height: 100vh;
-            background: #0b0b10;
             position: relative;
             overflow-x: hidden;
         }
 
-        #rainCanvas {
+        #bgVideo {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: -1;
         }
 
         .container {
@@ -162,11 +161,13 @@
 </head>
 <body>
 
-    <!-- Lienzo para la animación de lluvia -->
-    <canvas id="rainCanvas"></canvas>
+    <!-- Video de fondo en bucle -->
+    <video autoplay muted loop id="bgVideo">
+        <source src="mylivewallpapers-com-Puddle-Cloud-Reflections-FHD.mp4" type="video/mp4">
+    </video>
 
 <div class="container">
-    <h1>AFTERLIFE </h1>
+    <h1>PRECIOS AFTERLIFE Y HORAS</h1>
 
     <!-- SECCIÓN CENTRAL: Precios / Calculadora (Izquierda) y Total (Derecha) -->
     <div class="main-grid">
@@ -195,7 +196,7 @@
 
             <!-- Calculadora de Totales -->
             <div class="card" style="margin-bottom: 0;">
-                <h2>Calculadora</h2>
+                <h2>Calculadora de Cobro</h2>
                 <p style="font-size: 0.85rem;">Selecciona la cantidad:</p>
                 <table>
                     <tr><th>Ítem</th><th>Precio</th><th>Cant.</th></tr>
@@ -218,9 +219,9 @@
         <div>
             <!-- Sección del Total -->
             <div class="total-section card">
-                <h3>Total</h3>
+                <h3>Total a Transferir / Cobrar</h3>
                 <div class="total-amount" id="totalDisplay">$0</div>
-                <button class="btn" onclick="resetForm()">Reiniciar</button>
+                <button class="btn" onclick="resetForm()">Reiniciar Calculadora</button>
             </div>
 
             <!-- Control de Horas Semanales (Debajo del Total) -->
@@ -257,56 +258,6 @@
 </div>
 
 <script>
-    // --- SCRIPT DE LLUVIA DINÁMICA ---
-    const canvas = document.getElementById('rainCanvas');
-    const ctx = canvas.getContext('2d');
-
-    function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    const raindrops = [];
-    const maxDrops = 70;
-
-    for (let i = 0; i < maxDrops; i++) {
-        raindrops.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            length: Math.random() * 20 + 10,
-            speed: Math.random() * 4 + 3,
-            opacity: Math.random() * 0.3 + 0.1
-        });
-    }
-
-    function animateRain() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.lineWidth = 1.5;
-
-        raindrops.forEach(drop => {
-            ctx.beginPath();
-            ctx.moveTo(drop.x, drop.y);
-            // Inclinación sutil de la lluvia hacia la derecha
-            ctx.lineTo(drop.x + 1, drop.y + drop.length);
-            ctx.strokeStyle = `rgba(187, 134, 252, ${drop.opacity})`;
-            ctx.stroke();
-
-            drop.y += drop.speed;
-            drop.x += 0.3;
-
-            if (drop.y > canvas.height) {
-                drop.y = -20;
-                drop.x = Math.random() * canvas.width;
-            }
-        });
-
-        requestAnimationFrame(animateRain);
-    }
-    animateRain();
-
-
     // --- LÓGICA DE PRECIOS ---
     const inputs = document.querySelectorAll('.item-calc');
     const totalDisplay = document.getElementById('totalDisplay');
