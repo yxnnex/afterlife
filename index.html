@@ -11,6 +11,7 @@
             --accent-color: #bb86fc;
             --accent-hover: #3700b3;
             --border-color: #333;
+            --weekly-bg: rgba(187, 134, 252, 0.15);
         }
 
         body {
@@ -87,14 +88,20 @@
         th {
             color: var(--accent-color);
         }
-        input[type="number"] {
-            width: 50px;
+        input[type="number"], input[type="datetime-local"] {
             padding: 4px;
             background: rgba(30, 30, 35, 0.9);
             border: 1px solid var(--border-color);
             color: #fff;
             border-radius: 4px;
             text-align: center;
+        }
+        input[type="number"] {
+            width: 50px;
+        }
+        input[type="datetime-local"] {
+            color-scheme: dark;
+            padding: 6px;
         }
         .total-section {
             background-color: var(--card-bg);
@@ -148,15 +155,30 @@
         .btn-danger:hover {
             background-color: #ff8b9e;
         }
-        .btn-secondary {
-            background-color: rgba(255, 255, 255, 0.12);
-            color: #fff;
-            border: 1px solid var(--border-color);
-            padding: 6px 10px;
-            font-size: 0.85rem;
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 0.8rem;
         }
-        .btn-secondary:hover {
-            background-color: rgba(255, 255, 255, 0.25);
+        .adjust-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 12px;
+            text-align: center;
+        }
+        .weekly-header {
+            background-color: var(--weekly-bg);
+            color: #bb86fc;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .weekly-header td {
+            padding: 12px 8px;
+            border-bottom: 2px solid var(--accent-color);
+        }
+        .shift-row td {
+            padding-left: 20px;
+            font-size: 0.85rem;
         }
         .note {
             font-size: 0.85rem;
@@ -166,36 +188,18 @@
             font-style: italic;
             text-shadow: 0 1px 3px rgba(0,0,0,0.9);
         }
-        .time-adjust-container {
-            display: flex;
-            gap: 6px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 12px;
-        }
-        .custom-adjust-box {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            margin-top: 12px;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 8px;
-            border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .custom-adjust-box input[type="number"] {
-            width: 65px;
-            padding: 6px;
-        }
-        .custom-adjust-box label {
-            font-size: 0.85rem;
-            color: #aaa;
+        .grand-total {
+            text-align: right;
+            margin-top: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #03dac6;
         }
     </style>
 </head>
 <body>
 
+    <!-- Video de fondo en bucle -->
     <video autoplay muted loop id="bgVideo">
         <source src="mylivewallpapers-com-Puddle-Cloud-Reflections-FHD.mp4" type="video/mp4">
     </video>
@@ -203,8 +207,12 @@
 <div class="container">
     <h1>PRECIOS AFTERLIFE Y HORAS</h1>
 
+    <!-- SECCIÓN CENTRAL -->
     <div class="main-grid">
+        
+        <!-- Columna Izquierda: Precios y Calculadora -->
         <div class="prices-container">
+            <!-- Lista de Precios Estática -->
             <div class="card" style="margin-bottom: 0;">
                 <h2>Lista de Precios</h2>
                 <table>
@@ -224,6 +232,7 @@
                 </table>
             </div>
 
+            <!-- Calculadora de Totales -->
             <div class="card" style="margin-bottom: 0;">
                 <h2>Calculadora de Cobro</h2>
                 <p style="font-size: 0.85rem;">Selecciona la cantidad:</p>
@@ -244,62 +253,84 @@
             </div>
         </div>
 
+        <!-- Columna Derecha: Total y Cronómetro -->
         <div>
+            <!-- Sección del Total -->
             <div class="total-section card">
                 <h3>Total a Transferir / Cobrar</h3>
                 <div class="total-amount" id="totalDisplay">$0</div>
                 <button class="btn" onclick="resetForm()">Reiniciar Calculadora</button>
             </div>
 
+            <!-- Control de Horas -->
             <div class="card" style="margin-top: 20px;">
                 <h2>Control de Horas</h2>
                 <div class="timer-display" id="timerDisplay">00:00:00</div>
                 
-                <!-- Quick Minute Adjustments -->
-                <div class="time-adjust-container">
-                    <button class="btn btn-secondary" onclick="addMinutes(-15)">-15m</button>
-                    <button class="btn btn-secondary" onclick="addMinutes(-5)">-5m</button>
-                    <button class="btn btn-secondary" onclick="addMinutes(-1)">-1m</button>
-                    <button class="btn btn-secondary" onclick="addMinutes(1)">+1m</button>
-                    <button class="btn btn-secondary" onclick="addMinutes(5)">+5m</button>
-                    <button class="btn btn-secondary" onclick="addMinutes(15)">+15m</button>
-                </div>
-
-                <!-- Custom Minute Input Adjustment -->
-                <div class="custom-adjust-box">
-                    <label for="customMins">Minutos:</label>
-                    <input type="number" id="customMins" value="10" min="1">
-                    <button class="btn btn-secondary" onclick="applyCustomMinutes(1)">+ Sumar</button>
-                    <button class="btn btn-secondary" onclick="applyCustomMinutes(-1)">- Restar</button>
-                </div>
-
                 <div class="btn-group">
                     <button class="btn" id="startBtn" onclick="startTimer()">Iniciar</button>
                     <button class="btn" id="pauseBtn" onclick="pauseTimer()">Pausar</button>
                     <button class="btn btn-danger" onclick="resetTimer()">Reiniciar</button>
-                    <button class="btn" onclick="saveWeek()">Guardar Semana</button>
+                </div>
+
+                <!-- Botones de Corrección de Minutos -->
+                <div class="adjust-box">
+                    <div style="font-size: 0.85rem; margin-bottom: 6px; color: #bbb;">Ajuste Rápido de Minutos:</div>
+                    <div class="btn-group" style="margin-top: 0;">
+                        <button class="btn btn-sm" onclick="adjustMinutes(-15)">-15m</button>
+                        <button class="btn btn-sm" onclick="adjustMinutes(-5)">-5m</button>
+                        <button class="btn btn-sm" onclick="adjustMinutes(-1)">-1m</button>
+                        <button class="btn btn-sm" onclick="adjustMinutes(1)">+1m</button>
+                        <button class="btn btn-sm" onclick="adjustMinutes(5)">+5m</button>
+                        <button class="btn btn-sm" onclick="adjustMinutes(15)">+15m</button>
+                    </div>
+
+                    <div style="margin-top: 10px; display: flex; gap: 8px; justify-content: center; align-items: center;">
+                        <label for="customMins" style="font-size: 0.85rem;">Minutos:</label>
+                        <input type="number" id="customMins" value="10" min="1" style="width: 60px;">
+                        <button class="btn btn-sm" onclick="applyCustomMinutes(1)">+ Sumar</button>
+                        <button class="btn btn-sm" onclick="applyCustomMinutes(-1)">- Restar</button>
+                    </div>
+                </div>
+
+                <!-- Selección de Fecha/Hora Manual para Guardar Turno -->
+                <div class="adjust-box" style="margin-top: 10px;">
+                    <div style="font-size: 0.85rem; margin-bottom: 6px; color: #bbb;">Fecha/Hora del Turno:</div>
+                    <input type="datetime-local" id="shiftDateTime">
+                    <div style="margin-top: 8px;">
+                        <button class="btn" onclick="saveShift()" style="width: 100%;">Guardar Turno / Fecha</button>
+                    </div>
                 </div>
             </div>
         </div>
+
     </div>
 
+    <!-- SECCIÓN INFERIOR: Historial por Semanas y Turnos -->
     <div class="card" style="margin-top: 30px;">
-        <h2>Historial de Horas Acumuladas por Semana</h2>
+        <h2>Historial de Horas Agrupado por Semana</h2>
         <table id="historyTable">
-            <tr>
-                <th>Semana / Fecha</th>
-                <th>Tiempo Acumulado</th>
-                <th>Acción</th>
-            </tr>
+            <thead>
+                <tr>
+                    <th>Fecha / Hora del Turno</th>
+                    <th>Tiempo Acumulado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody id="historyTableBody">
+                <!-- Se llena dinámicamente -->
+            </tbody>
         </table>
+        <div id="grandTotalDisplay" class="grand-total">Total General Acumulado: 0h 0m 0s</div>
     </div>
     
     <div class="note">
-        (Todo lo que no sea tuning lo cobran a su cuenta, o sea les transfieren los clientes)
+        (Las semanas se separan automáticamente de Lunes 00:00 a Domingo 23:59)
     </div>
 </div>
 
 <script>
+    // --- LÓGICA DE PRECIOS ---
     const inputs = document.querySelectorAll('.item-calc');
     const totalDisplay = document.getElementById('totalDisplay');
 
@@ -322,6 +353,7 @@
         calculateTotal();
     }
 
+    // --- LÓGICA DEL CRONÓMETRO Y HORAS ---
     let seconds = localStorage.getItem('afterlife_seconds') !== null ? parseInt(localStorage.getItem('afterlife_seconds')) : 0;
     let timerInterval = null;
     let isRunning = false;
@@ -336,20 +368,6 @@
             (hrs < 10 ? "0" : "") + hrs + ":" +
             (mins < 10 ? "0" : "") + mins + ":" +
             (secs < 10 ? "0" : "") + secs;
-    }
-
-    function addMinutes(mins) {
-        seconds += mins * 60;
-        if (seconds < 0) seconds = 0;
-        localStorage.setItem('afterlife_seconds', seconds);
-        updateTimerDisplay();
-    }
-
-    function applyCustomMinutes(sign) {
-        const val = parseInt(document.getElementById('customMins').value) || 0;
-        if (val > 0) {
-            addMinutes(val * sign);
-        }
     }
 
     function startTimer() {
@@ -375,46 +393,154 @@
         updateTimerDisplay();
     }
 
-    function loadHistory() {
-        let history = JSON.parse(localStorage.getItem('afterlife_history')) || [];
-        let table = document.getElementById('historyTable');
-        table.innerHTML = `<tr><th>Semana / Fecha</th><th>Tiempo Acumulado</th><th>Acción</th></tr>`;
-        
-        history.forEach((item, index) => {
-            let row = table.insertRow();
-            row.innerHTML = `<td>${item.date}</td><td>${item.time}</td><td><button class="btn btn-danger" style="padding: 2px 8px; font-size: 0.8rem;" onclick="deleteHistory(${index})">Eliminar</button></td>`;
-        });
+    function adjustMinutes(mins) {
+        seconds += mins * 60;
+        if (seconds < 0) seconds = 0;
+        localStorage.setItem('afterlife_seconds', seconds);
+        updateTimerDisplay();
     }
 
-    function saveWeek() {
+    function applyCustomMinutes(direction) {
+        const customInput = document.getElementById('customMins');
+        const mins = parseInt(customInput.value) || 0;
+        if (mins > 0) {
+            adjustMinutes(mins * direction);
+        }
+    }
+
+    // --- CÁLCULO DE RANGO DE SEMANA (Lunes 00:00 a Domingo 23:59) ---
+    function getWeekRange(dateObj) {
+        let date = new Date(dateObj);
+        let day = date.getDay(); // 0 = Domingo, 1 = Lunes...
+        let diffToMonday = date.getDate() - day + (day === 0 ? -6 : 1);
+        
+        let monday = new Date(date.setDate(diffToMonday));
+        monday.setHours(0,0,0,0);
+        
+        let sunday = new Date(monday);
+        sunday.setDate(monday.getDate() + 6);
+        sunday.setHours(23,59,59,999);
+
+        let options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+        let mondayStr = monday.toLocaleDateString('es-ES', options);
+        let sundayStr = sunday.toLocaleDateString('es-ES', options);
+
+        return {
+            key: `${monday.getTime()}`,
+            label: `Semana del Lunes ${mondayStr} al Domingo ${sundayStr}`,
+            mondayTimestamp: monday.getTime()
+        };
+    }
+
+    function formatDuration(totalSecs) {
+        let hrs = Math.floor(totalSecs / 3600);
+        let mins = Math.floor((totalSecs % 3600) / 60);
+        let secs = totalSecs % 60;
+        return `${hrs}h ${mins}m ${secs}s`;
+    }
+
+    // --- GUARDAR TURNO CON FECHA/HORA ---
+    function saveShift() {
         if (seconds === 0) {
-            alert("El cronómetro está en cero, no hay horas para guardar.");
+            alert("El cronómetro está en cero, no hay tiempo para guardar.");
             return;
         }
-        let hrs = Math.floor(seconds / 3600);
-        let mins = Math.floor((seconds % 3600) / 60);
-        let secs = seconds % 60;
-        let timeString = `${hrs}h ${mins}m ${secs}s`;
-        
-        let now = new Date();
-        let dateString = `Semana del ${now.toLocaleDateString()}`;
 
-        let history = JSON.parse(localStorage.getItem('afterlife_history')) || [];
-        history.unshift({ date: dateString, time: timeString });
-        localStorage.setItem('afterlife_history', JSON.stringify(history));
+        const dateInput = document.getElementById('shiftDateTime').value;
+        let shiftDate = dateInput ? new Date(dateInput) : new Date();
+
+        let weekInfo = getWeekRange(shiftDate);
+        let formattedShiftDate = shiftDate.toLocaleString('es-ES', { 
+            day: '2-digit', month: '2-digit', year: 'numeric',
+            hour: '2-digit', minute: '2-digit', second: '2-digit'
+        });
+
+        let newShift = {
+            id: Date.now(),
+            timestamp: shiftDate.getTime(),
+            dateStr: formattedShiftDate,
+            durationSecs: seconds,
+            weekKey: weekInfo.key,
+            weekLabel: weekInfo.label,
+            mondayTimestamp: weekInfo.mondayTimestamp
+        };
+
+        let shifts = JSON.parse(localStorage.getItem('afterlife_shifts')) || [];
+        shifts.push(newShift);
+        localStorage.setItem('afterlife_shifts', JSON.stringify(shifts));
 
         loadHistory();
         resetTimer();
-        alert("¡Progreso de la semana guardado con éxito!");
+        document.getElementById('shiftDateTime').value = '';
+        alert("¡Turno registrado correctamente!");
     }
 
-    function deleteHistory(index) {
-        let history = JSON.parse(localStorage.getItem('afterlife_history')) || [];
-        history.splice(index, 1);
-        localStorage.setItem('afterlife_history', JSON.stringify(history));
+    function deleteShift(id) {
+        let shifts = JSON.parse(localStorage.getItem('afterlife_shifts')) || [];
+        shifts = shifts.filter(shift => shift.id !== id);
+        localStorage.setItem('afterlife_shifts', JSON.stringify(shifts));
         loadHistory();
     }
 
+    function loadHistory() {
+        let shifts = JSON.parse(localStorage.getItem('afterlife_shifts')) || [];
+        let tbody = document.getElementById('historyTableBody');
+        tbody.innerHTML = '';
+
+        if (shifts.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#888;">No hay turnos registrados aún.</td></tr>`;
+            document.getElementById('grandTotalDisplay').textContent = `Total General Acumulado: 0h 0m 0s`;
+            return;
+        }
+
+        // Agrupar turnos por semana
+        let weeksMap = {};
+        let grandTotalSecs = 0;
+
+        shifts.forEach(shift => {
+            grandTotalSecs += shift.durationSecs;
+            if (!weeksMap[shift.weekKey]) {
+                weeksMap[shift.weekKey] = {
+                    label: shift.weekLabel,
+                    mondayTimestamp: shift.mondayTimestamp,
+                    totalSecs: 0,
+                    shifts: []
+                };
+            }
+            weeksMap[shift.weekKey].totalSecs += shift.durationSecs;
+            weeksMap[shift.weekKey].shifts.push(shift);
+        });
+
+        // Ordenar semanas de más reciente a más antigua
+        let sortedWeeks = Object.values(weeksMap).sort((a, b) => b.mondayTimestamp - a.mondayTimestamp);
+
+        sortedWeeks.forEach(week => {
+            // Fila Encabezado de Semana con el Total Acumulado Semanal
+            let weekHeaderRow = document.createElement('tr');
+            weekHeaderRow.className = 'weekly-header';
+            weekHeaderRow.innerHTML = `
+                <td colspan="2">📅 ${week.label} <span style="margin-left: 15px; color: #03dac6; font-size: 0.95rem;">(Total Semana: ${formatDuration(week.totalSecs)})</span></td>
+                <td><strong>Semana</strong></td>
+            `;
+            tbody.appendChild(weekHeaderRow);
+
+            // Ordenar turnos de la semana por fecha descendente
+            week.shifts.sort((a, b) => b.timestamp - a.timestamp).forEach(shift => {
+                let shiftRow = document.createElement('tr');
+                shiftRow.className = 'shift-row';
+                shiftRow.innerHTML = `
+                    <td> Turno del ${shift.dateStr}</td>
+                    <td>${formatDuration(shift.durationSecs)}</td>
+                    <td><button class="btn btn-danger btn-sm" onclick="deleteShift(${shift.id})">Eliminar</button></td>
+                `;
+                tbody.appendChild(shiftRow);
+            });
+        });
+
+        document.getElementById('grandTotalDisplay').textContent = `Total General Acumulado: ${formatDuration(grandTotalSecs)}`;
+    }
+
+    // Inicializar al cargar la página
     updateTimerDisplay();
     loadHistory();
 </script>
