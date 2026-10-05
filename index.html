@@ -88,16 +88,15 @@
         th {
             color: var(--accent-color);
         }
-        input[type="number"], input[type="time"] {
+        input[type="number"] {
             padding: 5px;
             background: rgba(30, 30, 35, 0.9);
             border: 1px solid var(--border-color);
             color: #fff;
             border-radius: 4px;
             text-align: center;
+            width: 50px;
         }
-        input[type="number"] { width: 50px; }
-        input[type="time"] { width: 110px; font-size: 1rem; }
 
         .total-section {
             background-color: var(--card-bg);
@@ -115,17 +114,8 @@
             margin: 15px 0;
             text-shadow: 0 0 10px rgba(3, 218, 198, 0.4);
         }
-        .timer-display {
-            font-size: 2.2rem;
-            color: #03dac6;
-            font-weight: bold;
-            text-align: center;
-            font-family: monospace;
-            margin: 10px 0;
-            text-shadow: 0 0 10px rgba(3, 218, 198, 0.4);
-        }
         .shift-info {
-            font-size: 0.9rem;
+            font-size: 1rem;
             text-align: center;
             color: #b0bec5;
             margin-bottom: 10px;
@@ -177,7 +167,6 @@
 <div class="container">
     <h1>PRECIOS AFTERLIFE Y HORAS</h1>
 
-    <!-- SECCIÓN CENTRAL: Precios / Calculadora (Izquierda) y Total (Derecha) -->
     <div class="main-grid">
         
         <!-- Columna Izquierda: Precios y Calculadora -->
@@ -223,7 +212,7 @@
             </div>
         </div>
 
-        <!-- Columna Derecha: Total y Control de Horas por Reloj -->
+        <!-- Columna Derecha: Total y Control de Horas Automático -->
         <div>
             <!-- Sección del Total -->
             <div class="total-section card">
@@ -232,29 +221,26 @@
                 <button class="btn" onclick="resetForm()">Reiniciar Calculadora</button>
             </div>
 
-            <!-- Control de Horas Sincronizado por Reloj -->
+            <!-- Control de Turno Automático -->
             <div class="card" style="margin-top: 20px;">
                 <h2>Control de Turno</h2>
                 
-                <div id="setupShiftSection" style="text-align: center; margin: 15px 0;">
-                    <label style="display: block; margin-bottom: 8px; font-size: 0.9rem;">Hora de Ingreso:</label>
-                    <input type="time" id="startTimeInput">
-                    <div style="margin-top: 15px;">
-                        <button class="btn" onclick="startShift()">Iniciar Turno</button>
-                    </div>
+                <div id="setupShiftSection" style="text-align: center; margin: 20px 0;">
+                    <p style="font-size: 0.9rem; color: #aaa; margin-bottom: 15px;">Registra tu entrada y salida automáticamente:</p>
+                    <button class="btn" onclick="startShift()" style="font-size: 1rem; padding: 10px 20px;">Iniciar Turno (Fichar)</button>
                 </div>
 
-                <div id="activeShiftSection" style="display: none; text-align: center; margin: 10px 0;">
+                <div id="activeShiftSection" style="display: none; text-align: center; margin: 15px 0;">
                     <div class="shift-info" id="shiftStartInfo">Ingreso: --:--</div>
-                    <div class="timer-display" id="timerDisplay">00:00:00</div>
+                    <div style="font-size: 0.9rem; color: #03dac6; margin-bottom: 15px;">Turno en curso...</div>
                     <div class="btn-group">
-                        <button class="btn btn-danger" onclick="endShift()">Finalizar Turno</button>
+                        <button class="btn btn-danger" onclick="endShift()" style="font-size: 1rem; padding: 10px 20px;">Finalizar Turno</button>
                     </div>
                 </div>
 
                 <!-- Botón para acumular al total semanal general -->
                 <div style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 15px; text-align: center;">
-                    <div style="font-size: 0.85rem; margin-bottom: 8px; color: #aaa;">Acumulado total actual: <span id="accumulatedTimeDisplay" style="color:#03dac6; font-weight:bold;">1h 5m</span></div>
+                    <div style="font-size: 0.85rem; margin-bottom: 8px; color: #aaa;">Acumulado total actual: <span id="accumulatedTimeDisplay" style="color:#03dac6; font-weight:bold;">0h 0m</span></div>
                     <button class="btn" onclick="saveWeek()">Guardar Semana Actual</button>
                 </div>
             </div>
@@ -304,20 +290,14 @@
         calculateTotal();
     }
 
-    // --- LÓGICA DE TIEMPO BASADA EN RELOJ (1.0833 horas = 3900 segundos) ---
-    let totalAccumulatedSeconds = localStorage.getItem('afterlife_total_seconds') !== null ? parseInt(localStorage.getItem('afterlife_total_seconds')) : 3900;
-    
+    // --- LÓGICA DE CONTROL DE TURNO AUTOMÁTICO ---
+    let totalAccumulatedSeconds = localStorage.getItem('afterlife_total_seconds') !== null ? parseInt(localStorage.getItem('afterlife_total_seconds')) : 0;
     let shiftStartTime = localStorage.getItem('afterlife_shift_start');
     
     const setupShiftSection = document.getElementById('setupShiftSection');
     const activeShiftSection = document.getElementById('activeShiftSection');
-    const startTimeInput = document.getElementById('startTimeInput');
     const shiftStartInfo = document.getElementById('shiftStartInfo');
-    const timerDisplay = document.getElementById('timerDisplay');
     const accumulatedTimeDisplay = document.getElementById('accumulatedTimeDisplay');
-
-    const nowInit = new Date();
-    startTimeInput.value = String(nowInit.getHours()).padStart(2, '0') + ':' + String(nowInit.getMinutes()).padStart(2, '0');
 
     function updateDisplays() {
         let hrsAcc = Math.floor(totalAccumulatedSeconds / 3600);
@@ -331,21 +311,7 @@
             activeShiftSection.style.display = 'block';
             
             let startDate = new Date(parseInt(shiftStartTime));
-            shiftStartInfo.textContent = `Ingreso: ${String(startDate.getHours()).padStart(2, '0')}:${String(startDate.getMinutes()).padStart(2, '0')}`;
-            
-            window.shiftInterval = setInterval(() => {
-                let now = Date.now();
-                let diffSeconds = Math.floor((now - parseInt(shiftStartTime)) / 1000);
-                
-                let hrs = Math.floor(diffSeconds / 3600);
-                let mins = Math.floor((diffSeconds % 3600) / 60);
-                let secs = diffSeconds % 60;
-                
-                timerDisplay.textContent = 
-                    (hrs < 10 ? "0" : "") + hrs + ":" +
-                    (mins < 10 ? "0" : "") + mins + ":" +
-                    (secs < 10 ? "0" : "") + secs;
-            }, 1000);
+            shiftStartInfo.textContent = `Ingreso: ${startDate.toLocaleDateString()} a las ${String(startDate.getHours()).padStart(2, '0')}:${String(startDate.getMinutes()).padStart(2, '0')}`;
         } else {
             setupShiftSection.style.display = 'block';
             activeShiftSection.style.display = 'none';
@@ -354,16 +320,7 @@
     }
 
     function startShift() {
-        let timeValue = startTimeInput.value;
-        if (!timeValue) {
-            alert("Por favor selecciona una hora de ingreso.");
-            return;
-        }
-
-        let [hours, minutes] = timeValue.split(':').map(Number);
-        let startDate = new Date();
-        startDate.setHours(hours, minutes, 0, 0);
-
+        let startDate = new Date(); // Toma fecha y hora exacta actual de forma automática
         shiftStartTime = startDate.getTime();
         localStorage.setItem('afterlife_shift_start', shiftStartTime);
         checkActiveShift();
@@ -372,19 +329,19 @@
     function endShift() {
         if (!shiftStartTime) return;
 
-        let now = Date.now();
-        let sessionSeconds = Math.floor((now - parseInt(shiftStartTime)) / 1000);
+        let now = new Date();
+        let sessionSeconds = Math.floor((now.getTime() - parseInt(shiftStartTime)) / 1000);
         if (sessionSeconds < 0) sessionSeconds = 0;
 
         totalAccumulatedSeconds += sessionSeconds;
         localStorage.setItem('afterlife_total_seconds', totalAccumulatedSeconds);
 
-        let endDate = new Date(now);
-        let endString = `${String(endDate.getHours()).padStart(2, '0')}:${String(endDate.getMinutes()).padStart(2, '0')}`;
+        let endString = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        let workedHrs = Math.floor(sessionSeconds / 3600);
+        let workedMins = Math.floor((sessionSeconds % 3600) / 60);
 
-        alert(`¡Turno finalizado!\nHora de salida: ${endString}\nTiempo de esta sesión: ${Math.floor(sessionSeconds/3600)}h ${Math.floor((sessionSeconds%3600)/60)}m`);
+        alert(`¡Turno finalizado con éxito!\nHora de salida: ${endString}\nTiempo trabajado en esta sesión: ${workedHrs}h ${workedMins}m`);
 
-        clearInterval(window.shiftInterval);
         localStorage.removeItem('afterlife_shift_start');
         shiftStartTime = null;
         checkActiveShift();
