@@ -254,7 +254,7 @@
 
                 <!-- Botón para acumular al total semanal general -->
                 <div style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 15px; text-align: center;">
-                    <div style="font-size: 0.85rem; margin-bottom: 8px; color: #aaa;">Acumulado total actual: <span id="accumulatedTimeDisplay" style="color:#03dac6; font-weight:bold;">0h 20m</span></div>
+                    <div style="font-size: 0.85rem; margin-bottom: 8px; color: #aaa;">Acumulado total actual: <span id="accumulatedTimeDisplay" style="color:#03dac6; font-weight:bold;">1h 5m</span></div>
                     <button class="btn" onclick="saveWeek()">Guardar Semana Actual</button>
                 </div>
             </div>
@@ -304,11 +304,10 @@
         calculateTotal();
     }
 
-    // --- LÓGICA DE TIEMPO BASADA EN RELOJ (SINCRONIZADA) ---
-    // Partimos de 20 minutos guardados base (1200 segundos) si no hay nada previo
-    let totalAccumulatedSeconds = localStorage.getItem('afterlife_total_seconds') !== null ? parseInt(localStorage.getItem('afterlife_total_seconds')) : 1200;
+    // --- LÓGICA DE TIEMPO BASADA EN RELOJ (1.0833 horas = 3900 segundos) ---
+    let totalAccumulatedSeconds = localStorage.getItem('afterlife_total_seconds') !== null ? parseInt(localStorage.getItem('afterlife_total_seconds')) : 3900;
     
-    let shiftStartTime = localStorage.getItem('afterlife_shift_start'); // Timestamp de inicio o null
+    let shiftStartTime = localStorage.getItem('afterlife_shift_start');
     
     const setupShiftSection = document.getElementById('setupShiftSection');
     const activeShiftSection = document.getElementById('activeShiftSection');
@@ -317,12 +316,10 @@
     const timerDisplay = document.getElementById('timerDisplay');
     const accumulatedTimeDisplay = document.getElementById('accumulatedTimeDisplay');
 
-    // Rellenar input con hora actual por defecto
     const nowInit = new Date();
     startTimeInput.value = String(nowInit.getHours()).padStart(2, '0') + ':' + String(nowInit.getMinutes()).padStart(2, '0');
 
     function updateDisplays() {
-        // Mostrar acumulado total
         let hrsAcc = Math.floor(totalAccumulatedSeconds / 3600);
         let minsAcc = Math.floor((totalAccumulatedSeconds % 3600) / 60);
         accumulatedTimeDisplay.textContent = `${hrsAcc}h ${minsAcc}m`;
@@ -336,7 +333,6 @@
             let startDate = new Date(parseInt(shiftStartTime));
             shiftStartInfo.textContent = `Ingreso: ${String(startDate.getHours()).padStart(2, '0')}:${String(startDate.getMinutes()).padStart(2, '0')}`;
             
-            // Intervalo que calcula contra la hora real del sistema (resuelve el problema de pestañas inactivas)
             window.shiftInterval = setInterval(() => {
                 let now = Date.now();
                 let diffSeconds = Math.floor((now - parseInt(shiftStartTime)) / 1000);
@@ -358,7 +354,7 @@
     }
 
     function startShift() {
-        let timeValue = startTimeInput.value; // formato "HH:MM"
+        let timeValue = startTimeInput.value;
         if (!timeValue) {
             alert("Por favor selecciona una hora de ingreso.");
             return;
@@ -368,7 +364,6 @@
         let startDate = new Date();
         startDate.setHours(hours, minutes, 0, 0);
 
-        // Si la hora elegida es mayor a la actual por algún error, asumimos hoy
         shiftStartTime = startDate.getTime();
         localStorage.setItem('afterlife_shift_start', shiftStartTime);
         checkActiveShift();
@@ -389,7 +384,6 @@
 
         alert(`¡Turno finalizado!\nHora de salida: ${endString}\nTiempo de esta sesión: ${Math.floor(sessionSeconds/3600)}h ${Math.floor((sessionSeconds%3600)/60)}m`);
 
-        // Limpiar turno actual
         clearInterval(window.shiftInterval);
         localStorage.removeItem('afterlife_shift_start');
         shiftStartTime = null;
@@ -430,7 +424,6 @@
         history.unshift({ date: dateString, time: timeString });
         localStorage.setItem('afterlife_history', JSON.stringify(history));
 
-        // Reiniciar contador total a 0
         totalAccumulatedSeconds = 0;
         localStorage.setItem('afterlife_total_seconds', 0);
 
