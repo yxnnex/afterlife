@@ -248,13 +248,13 @@
 
     </div>
 
-    <!-- SECCIÓN INFERIOR: Historial de Semanas Guardadas -->
+    <!-- SECCIÓN INFERIOR: Historial de Horas Acumuladas -->
     <div class="card" style="margin-top: 30px;">
-        <h2>Historial de Horas Acumuladas por Semana</h2>
+        <h2>Historial de Horas y Turnos</h2>
         <table id="historyTable">
             <tr>
-                <th>Semana / Fecha</th>
-                <th>Tiempo Acumulado</th>
+                <th>Turno / Fecha</th>
+                <th>Tiempo Trabajado</th>
                 <th>Acción</th>
             </tr>
             <!-- Se llena dinámicamente -->
@@ -333,25 +333,37 @@
         let sessionSeconds = Math.floor((now.getTime() - parseInt(shiftStartTime)) / 1000);
         if (sessionSeconds < 0) sessionSeconds = 0;
 
+        let workedHrs = Math.floor(sessionSeconds / 3600);
+        let workedMins = Math.floor((sessionSeconds % 3600) / 60);
+        let workedSecs = sessionSeconds % 60;
+        let sessionTimeString = `${workedHrs}h ${workedMins}m ${workedSecs}s`;
+
+        // Guardar automáticamente en el historial inferior
+        let dateString = `Turno del ${now.toLocaleDateString()} a las ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        let history = JSON.parse(localStorage.getItem('afterlife_history')) || [];
+        history.unshift({ date: dateString, time: sessionTimeString });
+        localStorage.setItem('afterlife_history', JSON.stringify(history));
+
+        // Acumular al total actual
         totalAccumulatedSeconds += sessionSeconds;
         localStorage.setItem('afterlife_total_seconds', totalAccumulatedSeconds);
 
         let endString = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-        let workedHrs = Math.floor(sessionSeconds / 3600);
-        let workedMins = Math.floor((sessionSeconds % 3600) / 60);
 
-        alert(`¡Turno finalizado con éxito!\nHora de salida: ${endString}\nTiempo trabajado en esta sesión: ${workedHrs}h ${workedMins}m`);
+        alert(`¡Turno finalizado con éxito!\nHora de salida: ${endString}\nTiempo trabajado: ${sessionTimeString}`);
 
         localStorage.removeItem('afterlife_shift_start');
         shiftStartTime = null;
+        
         checkActiveShift();
+        loadHistory();
     }
 
-    // --- GUARDAR Y SEPARAR POR SEMANA ---
+    // --- GESTIÓN DE HISTORIAL ---
     function loadHistory() {
         let history = JSON.parse(localStorage.getItem('afterlife_history')) || [];
         let table = document.getElementById('historyTable');
-        table.innerHTML = `<tr><th>Semana / Fecha</th><th>Tiempo Acumulado</th><th>Acción</th></tr>`;
+        table.innerHTML = `<tr><th>Turno / Fecha</th><th>Tiempo Trabajado</th><th>Acción</th></tr>`;
         
         history.forEach((item, index) => {
             let row = table.insertRow();
