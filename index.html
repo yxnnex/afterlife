@@ -321,9 +321,13 @@
         calculateTotal();
     }
 
-    // --- LÓGICA DE TIEMPO (RECUPERANDO DATOS DE LOCALSTORAGE) ---
-    // Lee exactamente lo que ya tiene guardado tu navegador; si no existe, arranca en 0
-    let totalAccumulatedSeconds = parseInt(localStorage.getItem('afterlife_total_seconds')) || 0;
+    // --- LÓGICA DE TIEMPO (RECUPERACIÓN SEGURA DE DATOS) ---
+    // Busca en todas las claves posibles de localStorage para no perder nada
+    let totalAccumulatedSeconds = parseInt(
+        localStorage.getItem('afterlife_total_seconds') || 
+        localStorage.getItem('afterlife_seconds') || 
+        0
+    );
     
     let shiftStartTime = localStorage.getItem('afterlife_shift_start');
     
