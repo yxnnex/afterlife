@@ -321,8 +321,9 @@
         calculateTotal();
     }
 
-    // --- LÓGICA DE TIEMPO ---
-    let totalAccumulatedSeconds = localStorage.getItem('afterlife_total_seconds') !== null ? parseInt(localStorage.getItem('afterlife_total_seconds')) : 3900;
+    // --- LÓGICA DE TIEMPO (RECUPERANDO DATOS DE LOCALSTORAGE) ---
+    // Lee exactamente lo que ya tiene guardado tu navegador; si no existe, arranca en 0
+    let totalAccumulatedSeconds = parseInt(localStorage.getItem('afterlife_total_seconds')) || 0;
     
     let shiftStartTime = localStorage.getItem('afterlife_shift_start');
     
@@ -338,7 +339,6 @@
     startTimeInput.value = String(nowInit.getHours()).padStart(2, '0') + ':' + String(nowInit.getMinutes()).padStart(2, '0');
 
     function updateDisplays() {
-        // Calcular total actual sumando lo acumulado guardado + el turno en curso si está activo
         let currentSecs = totalAccumulatedSeconds;
         if (shiftStartTime) {
             let activeDiff = Math.floor((Date.now() - parseInt(shiftStartTime)) / 1000);
@@ -346,4 +346,164 @@
         }
 
         let hrsAcc = Math.floor(currentSecs / 3600);
-        let minsAcc = Math.floor((currentSecs % 3600) /
+        let minsAcc = Math.floor((currentSecs % 3600) / 60);
+        let timeStr = `${hrsAcc}h ${minsAcc}m`;
+
+        accumulatedTimeDisplay.textContent = timeStr;
+        currentWeekHeaderTotal.textContent = `(${timeStr})`;
+    }
+
+    function editAccumulatedTime() {
+        let currentSecsRef = totalAccumulatedSeconds;
+        if (shiftStartTime) {
+            let activeDiff = Math.floor((Date.now() - parseInt(shiftStartTime)) / 1000);
+            if (activeDiff > 0) currentSecsRef += activeDiff;
+        }
+
+        let currentHours = Math.floor(currentSecsRef / 3600);
+        let currentMinutes = Math.floor((currentSecsRef % 3600) / 60);
+        
+        let inputHours = prompt("Ingresa las horas totales acumuladas:", currentHours);
+        if (inputHours === null) return;
+        
+        let inputMinutes = prompt("Ingresa los minutos adicionales:", currentMinutes);
+        if (inputMinutes === null) return;
+
+        let parsedHours = parseInt(inputHours) || 0;
+        let parsedMinutes = parseInt(inputMinutes) || 0;
+
+        totalAccumulatedSeconds = (parsedHours * 3600) + (parsedMinutes * 60);
+        
+        if (shiftStartTime) {
+            shiftStartTime = Date.now();
+            localStorage.setItem('afterlife_shift_start', shiftStartTime);
+        }
+
+        localStorage.setItem('afterlife_total_seconds', totalAccumulatedSeconds);
+        updateDisplays();
+        alert("¡Tiempo actualizado con éxito!");
+    }
+
+    function checkActiveShift() {
+        if (shiftStartTime) {
+            setupShiftSection.style.display = 'none';
+            activeShiftSection.style.display = 'block';
+            
+            let startDate = new Date(parseInt(shiftStartTime));
+            shiftStartInfo.textContent = `Ingreso: ${String(startDate.getHours()).padStart(2, '0')}:${String(startDate.getMinutes()).padStart(2, '0')}`;
+            
+            window.shiftInterval = setInterval(() => {
+                let now = Date.now();
+                let diffSeconds = Math.floor((now - parseInt(shiftStartTime)) / 1000);
+                
+                let hrs = Math.floor(diffSeconds / 3600);
+                let mins = Math.floor((diffSeconds % 3600) / 60);
+                let secs = diffSeconds % 60;
+                
+                timerDisplay.textContent = 
+                    (hrs < 10 ? "0" : "") + hrs + ":" +
+                    (mins < 10 ? "0" : "") + mins + ":" +
+                    (secs < 10 ? "0" : "") + secs;
+
+                updateDisplays();
+            }, 1000);
+        } else {
+            setupShiftSection.style.display = 'block';
+            activeShiftSection.style.display = 'none';
+        }
+        updateDisplays();
+    }
+
+    function startShift() {
+        let timeValue = startTimeInput.value;
+        if (!timeValue) {
+            alert("Por favor selecciona una hora de ingreso.");
+            return;
+        }
+
+        let [hours, minutes] = timeValue.split(':').map(Number);
+        let startDate = new Date();
+        startDate.setHours(hours, minutes, 0, 0);
+
+        shiftStartTime = startDate.getTime();
+        localStorage.setItem('afterlife_shift_start', shiftStartTime);
+        checkActiveShift();
+    }
+
+    function endShift() {
+        if (!shiftStartTime) return;
+
+        let now = Date.now();
+        let sessionSeconds = Math.floor((now - parseInt(shiftStartTime)) / 1000);
+        if (sessionSeconds < 0) sessionSeconds = 0;
+
+        totalAccumulatedSeconds += sessionSeconds;
+        localStorage.setItem('afterlife_total_seconds', totalAccumulatedSeconds);
+
+        let endDate = new Date(now);
+        let endString = `${String(endDate.getHours()).padStart(2, '0')}:${String(endDate.getMinutes()).padStart(2, '0')}`;
+
+        alert(`¡Turno finalizado!\nHora de salida: ${endString}\nTiempo de esta sesión: ${Math.floor(sessionSeconds/3600)}h ${Math.floor((sessionSeconds%3600)/60)}m`);
+
+        clearInterval(window.shiftInterval);
+        localStorage.removeItem('afterlife_shift_start');
+        shiftStartTime = null;
+        checkActiveShift();
+    }
+
+    // --- GUARDAR Y SEPARAR POR SEMANA ---
+    function loadHistory() {
+        let history = JSON.parse(localStorage.getItem('afterlife_history')) || [];
+        let table = document.getElementById('historyTable');
+        table.innerHTML = `<tr><th>Semana / Fecha</th><th>Tiempo Acumulado</th><th>Acción</th></tr>`;
+        
+        history.forEach((item, index) => {
+            let row = table.insertRow();
+            row.innerHTML = `<td>${item.date}</td><td>${item.time}</td><td><button class="btn btn-danger" style="padding: 2px 8px; font-size: 0.8rem;" onclick="deleteHistory(${index})">Eliminar</button></td>`;
+        });
+    }
+
+    function saveWeek() {
+        if (shiftStartTime) {
+            alert("Tienes un turno activo. Finalízalo antes de guardar la semana.");
+            return;
+        }
+        if (totalAccumulatedSeconds === 0) {
+            alert("No hay tiempo acumulado para guardar.");
+            return;
+        }
+
+        let hrs = Math.floor(totalAccumulatedSeconds / 3600);
+        let mins = Math.floor((totalAccumulatedSeconds % 3600) / 60);
+        let secs = totalAccumulatedSeconds % 60;
+        let timeString = `${hrs}h ${mins}m ${secs}s`;
+        
+        let now = new Date();
+        let dateString = `Semana del ${now.toLocaleDateString()}`;
+
+        let history = JSON.parse(localStorage.getItem('afterlife_history')) || [];
+        history.unshift({ date: dateString, time: timeString });
+        localStorage.setItem('afterlife_history', JSON.stringify(history));
+
+        totalAccumulatedSeconds = 0;
+        localStorage.setItem('afterlife_total_seconds', 0);
+
+        loadHistory();
+        updateDisplays();
+        alert("¡Progreso de la semana guardado y archivado con éxito!");
+    }
+
+    function deleteHistory(index) {
+        let history = JSON.parse(localStorage.getItem('afterlife_history')) || [];
+        history.splice(index, 1);
+        localStorage.setItem('afterlife_history', JSON.stringify(history));
+        loadHistory();
+    }
+
+    // Inicializar al cargar
+    checkActiveShift();
+    loadHistory();
+</script>
+
+</body>
+</html>
