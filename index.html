@@ -266,13 +266,13 @@
                     </div>
                 </div>
 
-                <!-- Botón para acumular al total semanal general con opción de editar -->
+                <!-- Botón para acumular al total general con opción de editar -->
                 <div style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 15px; text-align: center;">
                     <div style="font-size: 0.85rem; margin-bottom: 8px; color: #aaa;">
-                        Acumulado total actual: <span id="accumulatedTimeDisplay" style="color:#03dac6; font-weight:bold;">0h 0m</span>
+                        Acumulado turno actual: <span id="accumulatedTimeDisplay" style="color:#03dac6; font-weight:bold;">0h 0m</span>
                         <button class="btn-edit" onclick="editAccumulatedTime()" title="Editar tiempo manualmente">✎ Editar</button>
                     </div>
-                    <button class="btn" onclick="saveWeek()">Guardar Semana Actual</button>
+                    <button class="btn" onclick="saveWeek()">Guardar y Enviar a Historial</button>
                 </div>
             </div>
         </div>
@@ -281,7 +281,7 @@
 
     <!-- SECCIÓN INFERIOR: Historial de Semanas Guardadas -->
     <div class="card" style="margin-top: 30px;">
-        <h2>Historial de Horas Acumuladas por Semana <span id="currentWeekHeaderTotal" style="color:#03dac6; font-size:1.2rem;">(0h 0m)</span></h2>
+        <h2>Historial de Horas Acumuladas <span id="totalGeneralHeader" style="color:#03dac6; font-size:1.2rem;">(Total: 0h 0m)</span></h2>
         <table id="historyTable">
             <tr>
                 <th>Semana / Fecha</th>
@@ -321,8 +321,7 @@
         calculateTotal();
     }
 
-    // --- LÓGICA DE TIEMPO (RECUPERACIÓN SEGURA DE DATOS) ---
-    // Busca en todas las claves posibles de localStorage para no perder nada
+    // --- LÓGICA DE TIEMPO Y TOTAL GENERAL ---
     let totalAccumulatedSeconds = parseInt(
         localStorage.getItem('afterlife_total_seconds') || 
         localStorage.getItem('afterlife_seconds') || 
@@ -337,12 +336,25 @@
     const shiftStartInfo = document.getElementById('shiftStartInfo');
     const timerDisplay = document.getElementById('timerDisplay');
     const accumulatedTimeDisplay = document.getElementById('accumulatedTimeDisplay');
-    const currentWeekHeaderTotal = document.getElementById('currentWeekHeaderTotal');
+    const totalGeneralHeader = document.getElementById('totalGeneralHeader');
 
     const nowInit = new Date();
     startTimeInput.value = String(nowInit.getHours()).padStart(2, '0') + ':' + String(nowInit.getMinutes()).padStart(2, '0');
 
+    // Función auxiliar para convertir texto de tiempo ("Xh Ym Zs") a segundos totales
+    function parseTimeStringToSeconds(timeStr) {
+        let hours = 0, minutes = 0, seconds = 0;
+        let hMatch = timeStr.match(/(\d+)h/);
+        let mMatch = timeStr.match(/(\d+)m/);
+        let sMatch = timeStr.match(/(\d+)s/);
+        if (hMatch) hours = parseInt(hMatch[1]) || 0;
+        if (mMatch) minutes = parseInt(mMatch[1]) || 0;
+        if (sMatch) seconds = parseInt(sMatch[1]) || 0;
+        return (hours * 3600) + (minutes * 60) + seconds;
+    }
+
     function updateDisplays() {
+        // 1. Tiempo del turno actual pendiente de guardar
         let currentSecs = totalAccumulatedSeconds;
         if (shiftStartTime) {
             let activeDiff = Math.floor((Date.now() - parseInt(shiftStartTime)) / 1000);
@@ -351,10 +363,18 @@
 
         let hrsAcc = Math.floor(currentSecs / 3600);
         let minsAcc = Math.floor((currentSecs % 3600) / 60);
-        let timeStr = `${hrsAcc}h ${minsAcc}m`;
+        accumulatedTimeDisplay.textContent = `${hrsAcc}h ${minsAcc}m`;
 
-        accumulatedTimeDisplay.textContent = timeStr;
-        currentWeekHeaderTotal.textContent = `(${timeStr})`;
+        // 2. Sumar el turno actual + TODAS las semanas guardadas en el historial para el título
+        let totalGeneralSecs = currentSecs;
+        let history = JSON.parse(localStorage.getItem('afterlife_history')) || [];
+        history.forEach(item => {
+            totalGeneralSecs += parseTimeStringToSeconds(item.time);
+        });
+
+        let totalHrs = Math.floor(totalGeneralSecs / 3600);
+        let totalMins = Math.floor((totalGeneralSecs % 3600) / 60);
+        totalGeneralHeader.textContent = `(Total general: ${totalHrs}h ${totalMins}m)`;
     }
 
     function editAccumulatedTime() {
@@ -367,7 +387,7 @@
         let currentHours = Math.floor(currentSecsRef / 3600);
         let currentMinutes = Math.floor((currentSecsRef % 3600) / 60);
         
-        let inputHours = prompt("Ingresa las horas totales acumuladas:", currentHours);
+        let inputHours = prompt("Ingresa las horas acumuladas del turno actual:", currentHours);
         if (inputHours === null) return;
         
         let inputMinutes = prompt("Ingresa los minutos adicionales:", currentMinutes);
@@ -465,6 +485,7 @@
             let row = table.insertRow();
             row.innerHTML = `<td>${item.date}</td><td>${item.time}</td><td><button class="btn btn-danger" style="padding: 2px 8px; font-size: 0.8rem;" onclick="deleteHistory(${index})">Eliminar</button></td>`;
         });
+        updateDisplays();
     }
 
     function saveWeek() {
@@ -493,8 +514,7 @@
         localStorage.setItem('afterlife_total_seconds', 0);
 
         loadHistory();
-        updateDisplays();
-        alert("¡Progreso de la semana guardado y archivado con éxito!");
+        alert("¡Progreso guardado en el historial con éxito!");
     }
 
     function deleteHistory(index) {
