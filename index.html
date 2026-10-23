@@ -8,14 +8,12 @@
         :root {
             --card-bg: rgba(20, 20, 25, 0.88);
             --text-color: #e0e0e0;
-            --accent-purple: #bb86fc;
-            --accent-cyan: #03dac6;
-            --btn-ingreso: #3f51b5;
-            --btn-egreso: #ff5252;
-            --border-color: #333;
+            --accent-color: #bb86fc;
+            --accent-hover: #9955e8;
+            --teal-color: #03dac6;
+            --border-color: rgba(255, 255, 255, 0.1);
         }
 
-        /* --- FONDO DE VIDEO DINÁMICO --- */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: var(--text-color);
@@ -24,7 +22,6 @@
             min-height: 100vh;
             position: relative;
             overflow-x: hidden;
-            background-color: #0d0d11;
         }
 
         #bgVideo {
@@ -38,24 +35,24 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
             position: relative;
             z-index: 1;
         }
-        
+
         h1, h2, h3 {
             text-align: center;
-            color: var(--accent-purple);
+            color: var(--accent-color);
             margin-top: 0;
         }
-        
+
         h1 {
             margin-bottom: 25px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-            letter-spacing: 1px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.9);
         }
 
+        /* GRID PRINCIPAL: 2 Columnas */
         .main-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -63,7 +60,7 @@
             align-items: start;
         }
 
-        @media (max-width: 950px) {
+        @media (max-width: 900px) {
             .main-grid { grid-template-columns: 1fr; }
         }
 
@@ -71,9 +68,9 @@
             background-color: var(--card-bg);
             backdrop-filter: blur(12px);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
+            border-radius: 10px;
             padding: 20px;
-            box-shadow: 0 6px 24px rgba(0,0,0,0.6);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.7);
             margin-bottom: 20px;
         }
 
@@ -84,80 +81,55 @@
         }
 
         th, td {
-            padding: 8px 10px;
+            padding: 8px;
             text-align: left;
             border-bottom: 1px solid var(--border-color);
             font-size: 0.9rem;
         }
 
-        th { color: var(--accent-purple); }
+        th {
+            color: var(--accent-color);
+        }
 
         input[type="number"], input[type="time"] {
             padding: 6px;
-            background: rgba(30, 30, 38, 0.9);
+            background: rgba(30, 30, 35, 0.9);
             border: 1px solid var(--border-color);
             color: #fff;
-            border-radius: 6px;
+            border-radius: 4px;
             text-align: center;
         }
 
         input[type="number"] { width: 55px; }
-        input[type="time"] { width: 110px; font-size: 1rem; }
+        input[type="time"] { width: 110px; font-size: 1rem; color-scheme: dark; }
 
-        /* --- CONTROLES DE INGRESO / EGRESO --- */
-        .fichaje-box {
-            background: rgba(15, 15, 20, 0.7);
-            border-radius: 10px;
-            padding: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .fichaje-controls {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-            margin: 15px 0;
-        }
-
-        .btn-fichaje {
-            border: none;
-            padding: 10px 22px;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            color: #fff;
-            font-size: 0.95rem;
-            transition: transform 0.1s, filter 0.2s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-        }
-
-        .btn-fichaje:active { transform: scale(0.97); }
-
-        .btn-ingreso {
-            background-color: var(--btn-ingreso);
-        }
-        .btn-ingreso:hover { filter: brightness(1.2); }
-
-        .btn-egreso {
-            background-color: var(--btn-egreso);
-        }
-        .btn-egreso:hover { filter: brightness(1.2); }
-
-        /* --- BOTONES GENERALES --- */
         .btn {
-            background-color: var(--accent-purple);
+            background-color: var(--accent-color);
             color: #121212;
             border: none;
             padding: 8px 16px;
             font-weight: bold;
-            border-radius: 6px;
+            border-radius: 5px;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.2s;
         }
 
-        .btn:hover { background-color: var(--accent-cyan); }
+        .btn:hover {
+            background-color: var(--teal-color);
+            box-shadow: 0 0 10px rgba(3, 218, 198, 0.4);
+        }
+
+        .btn-ingreso {
+            background-color: #388e3c;
+            color: #fff;
+        }
+        .btn-ingreso:hover { background-color: #4caf50; }
+
+        .btn-egreso {
+            background-color: #d32f2f;
+            color: #fff;
+        }
+        .btn-egreso:hover { background-color: #f44336; }
 
         .btn-danger {
             background-color: #cf6679;
@@ -165,72 +137,59 @@
         }
         .btn-danger:hover { background-color: #ff8b9e; }
 
-        .btn-edit {
-            background-color: transparent;
-            border: 1px solid var(--accent-purple);
-            color: var(--accent-purple);
-            padding: 3px 8px;
-            font-size: 0.8rem;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-        .btn-edit:hover {
-            background-color: var(--accent-purple);
-            color: #121212;
+        .total-section {
+            text-align: center;
+            border: 2px solid var(--accent-color);
         }
 
-        /* --- GRÁFICOS CIRCULARES --- */
-        .charts-container {
+        .total-amount {
+            font-size: 2.5rem;
+            color: var(--teal-color);
+            font-weight: bold;
+            margin: 10px 0;
+            text-shadow: 0 0 12px rgba(3, 218, 198, 0.5);
+        }
+
+        /* ANILLOS DE PROGRESO CIRCULAR */
+        .progress-grid {
             display: flex;
             justify-content: space-around;
             align-items: center;
-            gap: 10px;
+            margin: 15px 0;
             flex-wrap: wrap;
-            margin: 20px 0;
-            background: rgba(255, 255, 255, 0.02);
-            padding: 15px;
-            border-radius: 12px;
+            gap: 15px;
         }
 
-        .chart-card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100px;
+        .progress-circle-container {
+            text-align: center;
         }
 
-        .chart-title {
-            font-size: 0.9rem;
+        .progress-circle-title {
+            font-size: 0.85rem;
+            color: var(--accent-color);
+            margin-bottom: 6px;
             font-weight: bold;
-            color: #9fa8da;
-            margin-bottom: 8px;
-        }
-
-        .circle-wrapper {
-            position: relative;
-            width: 85px;
-            height: 85px;
         }
 
         .circle-svg {
             transform: rotate(-90deg);
-            width: 100%;
-            height: 100%;
+            width: 90px;
+            height: 90px;
         }
 
         .circle-bg {
             fill: none;
             stroke: rgba(255, 255, 255, 0.1);
-            stroke-width: 7;
+            stroke-width: 8;
         }
 
-        .circle-progress {
+        .circle-bar {
             fill: none;
-            stroke: #5c6bc0;
-            stroke-width: 7;
+            stroke: var(--accent-color);
+            stroke-width: 8;
             stroke-linecap: round;
-            stroke-dasharray: 220;
-            stroke-dashoffset: 220;
+            stroke-dasharray: 251.2;
+            stroke-dashoffset: 251.2;
             transition: stroke-dashoffset 0.5s ease;
         }
 
@@ -240,42 +199,24 @@
             left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
-            width: 100%;
         }
 
         .circle-text .main-val {
             font-size: 0.85rem;
             font-weight: bold;
-            color: #ffffff;
-            display: block;
-            line-height: 1.1;
+            color: #fff;
         }
 
         .circle-text .sub-val {
-            font-size: 0.65rem;
-            color: #a0a0a0;
-            display: block;
-            margin-top: 2px;
+            font-size: 0.7rem;
+            color: #aaa;
         }
 
-        .total-amount {
-            font-size: 2.2rem;
-            color: var(--accent-cyan);
-            font-weight: bold;
-            margin: 10px 0;
-            text-shadow: 0 0 10px rgba(3, 218, 198, 0.4);
-            text-align: center;
-        }
-
-        .decimal-badge {
-            display: inline-block;
-            background: rgba(3, 218, 198, 0.15);
-            color: var(--accent-cyan);
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            font-weight: bold;
-            border: 1px solid rgba(3, 218, 198, 0.3);
+        .circle-wrapper {
+            position: relative;
+            width: 90px;
+            height: 90px;
+            margin: 0 auto;
         }
 
         .note {
@@ -286,11 +227,83 @@
             font-style: italic;
             text-shadow: 0 1px 3px rgba(0,0,0,0.9);
         }
+
+        /* --- MODAL PERSONALIZADA BONITA --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: rgba(25, 25, 32, 0.95);
+            border: 1px solid var(--accent-color);
+            border-radius: 12px;
+            padding: 25px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 0 30px rgba(187, 134, 252, 0.3);
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.25s ease;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+
+        .modal-title {
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            font-weight: bold;
+        }
+
+        .modal-body {
+            font-size: 0.95rem;
+            color: #e0e0e0;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .modal-input {
+            width: 80%;
+            padding: 8px;
+            margin-top: 10px;
+            background: rgba(10, 10, 15, 0.9);
+            border: 1px solid var(--accent-color);
+            border-radius: 6px;
+            color: #fff;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Video de fondo -->
+    <!-- Video de fondo en bucle -->
     <video autoplay muted loop id="bgVideo">
         <source src="mylivewallpapers-com-Puddle-Cloud-Reflections-FHD.mp4" type="video/mp4">
     </video>
@@ -300,9 +313,9 @@
 
     <div class="main-grid">
         
-        <!-- COLUMNA IZQUIERDA: Precios, Calculadora y Fichaje -->
+        <!-- COLUMNA IZQUIERDA: Precios -> Calculadora -> Fichaje -->
         <div>
-            <!-- Lista de Precios -->
+            <!-- 1. Lista de Precios -->
             <div class="card">
                 <h2>Lista de Precios</h2>
                 <table>
@@ -322,9 +335,10 @@
                 </table>
             </div>
 
-            <!-- Calculadora de Cobro -->
+            <!-- 2. Calculadora de Cobro -->
             <div class="card">
                 <h2>Calculadora de Cobro</h2>
+                <p style="font-size: 0.85rem; text-align: center; margin-bottom: 12px;">Selecciona la cantidad de ítems:</p>
                 <table>
                     <tr><th>Ítem</th><th>Precio</th><th>Cant.</th></tr>
                     <tr><td>Rep. Básica</td><td>$150</td><td><input type="number" class="item-calc" data-price="150" value="0" min="0"></td></tr>
@@ -341,107 +355,96 @@
                 </table>
             </div>
 
-            <!-- MÓDULO DE FICHAJE DE HORAS -->
+            <!-- 3. Fichaje de Turno (Estrictamente debajo de la calculadora) -->
             <div class="card">
                 <h2>Fichaje de Turno (Ingreso / Egreso)</h2>
-                <div class="fichaje-box">
-                    <div style="text-align: center; font-size: 0.9rem; color: #aaa; margin-bottom: 8px;">
-                        Selecciona la hora manualmente o se tomará la hora exacta del clic:
-                    </div>
-                    
-                    <div class="fichaje-controls">
-                        <div>
-                            <span style="font-size: 0.8rem; display: block; margin-bottom: 4px;">Hora:</span>
-                            <input type="time" id="fichajeTimeInput">
-                        </div>
-                        <button class="btn-fichaje btn-ingreso" onclick="registrarIngreso()">Ingreso</button>
-                        <button class="btn-fichaje btn-egreso" onclick="registrarEgreso()">Egreso</button>
-                    </div>
-
-                    <div id="activeShiftInfo" style="text-align: center; font-size: 0.85rem; color: var(--accent-cyan); min-height: 20px; margin-top: 5px;"></div>
+                <p style="font-size: 0.85rem; text-align: center; color: #aaa;">Selecciona la hora manualmente o se tomará la hora actual del clic:</p>
+                
+                <div style="text-align: center; margin: 15px 0;">
+                    <label style="font-size: 0.9rem; margin-right: 8px;">Hora:</label>
+                    <input type="time" id="shiftTimeInput">
                 </div>
+
+                <div style="display: flex; gap: 15px; justify-content: center;">
+                    <button class="btn btn-ingreso" onclick="registrarIngreso()">Ingreso</button>
+                    <button class="btn btn-egreso" onclick="registrarEgreso()">Egreso</button>
+                </div>
+
+                <div id="shiftStatus" style="text-align: center; margin-top: 15px; font-size: 0.85rem; color: var(--teal-color);"></div>
             </div>
         </div>
 
-        <!-- COLUMNA DERECHA: Total de Cobro, Gráficos de Progreso y Edición -->
+        <!-- COLUMNA DERECHA: Total -> Gráficas de Horas -> Historial -->
         <div>
-            <!-- Total a Cobrar -->
-            <div class="card" style="text-align: center;">
+            <!-- Total a Transferir / Cobrar -->
+            <div class="card total-section">
                 <h3>Total a Transferir / Cobrar</h3>
                 <div class="total-amount" id="totalDisplay">$0</div>
                 <button class="btn" onclick="resetForm()">Reiniciar Calculadora</button>
             </div>
 
-            <!-- ANILLOS DE PROGRESO DE HORAS (Estilo Captura) -->
+            <!-- Gráficas Circulares de Progreso -->
             <div class="card">
                 <h2>Progreso de Horas</h2>
                 
-                <div class="charts-container">
+                <div class="progress-grid">
                     <!-- HOY -->
-                    <div class="chart-card">
-                        <span class="chart-title">Hoy</span>
+                    <div class="progress-circle-container">
+                        <div class="progress-circle-title">Hoy</div>
                         <div class="circle-wrapper">
-                            <svg class="circle-svg" viewBox="0 0 80 80">
-                                <circle class="circle-bg" cx="40" cy="40" r="35" />
-                                <circle class="circle-progress" id="circleHoy" cx="40" cy="40" r="35" />
+                            <svg class="circle-svg">
+                                <circle class="circle-bg" cx="45" cy="45" r="40"></circle>
+                                <circle class="circle-bar" id="circleToday" cx="45" cy="45" r="40"></circle>
                             </svg>
                             <div class="circle-text">
-                                <span class="main-val" id="textHoyMain">00:00</span>
-                                <span class="sub-val" id="textHoySub">0.00h</span>
+                                <div class="main-val" id="textTodayHHMM">00:00</div>
+                                <div class="sub-val" id="textTodayDec">0.00h</div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- SEMANA (Meta de 7 horas) -->
-                    <div class="chart-card">
-                        <span class="chart-title">Semana</span>
+                    <!-- SEMANA (Meta 7h) -->
+                    <div class="progress-circle-container">
+                        <div class="progress-circle-title">Semana</div>
                         <div class="circle-wrapper">
-                            <svg class="circle-svg" viewBox="0 0 80 80">
-                                <circle class="circle-bg" cx="40" cy="40" r="35" />
-                                <circle class="circle-progress" id="circleSemana" cx="40" cy="40" r="35" />
+                            <svg class="circle-svg">
+                                <circle class="circle-bg" cx="45" cy="45" r="40"></circle>
+                                <circle class="circle-bar" id="circleWeek" cx="45" cy="45" r="40"></circle>
                             </svg>
                             <div class="circle-text">
-                                <span class="main-val" id="textSemanaMain">00:00</span>
-                                <span class="sub-val" id="textSemanaSub">Meta: 7.00h</span>
+                                <div class="main-val" id="textWeekHHMM">00:00</div>
+                                <div class="sub-val" id="textWeekDec">0.00h / 7h</div>
                             </div>
                         </div>
                     </div>
 
                     <!-- MES -->
-                    <div class="chart-card">
-                        <span class="chart-title">Mes</span>
+                    <div class="progress-circle-container">
+                        <div class="progress-circle-title">Mes</div>
                         <div class="circle-wrapper">
-                            <svg class="circle-svg" viewBox="0 0 80 80">
-                                <circle class="circle-bg" cx="40" cy="40" r="35" />
-                                <circle class="circle-progress" id="circleMes" cx="40" cy="40" r="35" />
+                            <svg class="circle-svg">
+                                <circle class="circle-bg" cx="45" cy="45" r="40"></circle>
+                                <circle class="circle-bar" id="circleMonth" cx="45" cy="45" r="40"></circle>
                             </svg>
                             <div class="circle-text">
-                                <span class="main-val" id="textMesMain">00:00</span>
-                                <span class="sub-val" id="textMesSub">0.00h</span>
+                                <div class="main-val" id="textMonthHHMM">00:00</div>
+                                <div class="sub-val" id="textMonthDec">0.00h</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Resumen en Formato Centesimal / Decimal del Sistema -->
-                <div style="text-align: center; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;">
-                    <div style="margin-bottom: 8px;">
-                        <span>Formato Trabajo (Decimal): </span>
-                        <span class="decimal-badge" id="semanaDecimalDisplay">0.00 horas</span>
-                    </div>
-                    <div style="font-size: 0.85rem; color: #aaa; margin-bottom: 12px;">
-                        Faltan para la meta semanal (7h): <strong id="faltantesDisplay" style="color:#ff8b9e;">7.00 hrs</strong>
-                    </div>
-
-                    <!-- Botón para Editar Manualmente las Horas -->
-                    <button class="btn-edit" onclick="abrirEdicionManual()">✎ Ajustar / Editar Horas Manualmente</button>
+                <div style="text-align: center; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                    <div style="font-size: 0.95rem; margin-bottom: 5px;">Formato Trabajo (Decimal): <strong id="decimalTotalDisplay" style="color: var(--teal-color);">0.00 horas</strong></div>
+                    <div style="font-size: 0.85rem; color: #ff8b9e; margin-bottom: 12px;" id="remainingWeekDisplay">Faltan para la meta semanal (7h): 7.00 hrs (07:00)</div>
+                    <button class="btn" style="font-size: 0.8rem; padding: 5px 12px;" onclick="promptEditWeekHours()">✎ Ajustar / Editar Horas Manualmente</button>
                 </div>
             </div>
 
-            <!-- Historial de Fichajes -->
+            <!-- Historial de Turnos -->
             <div class="card">
                 <h2>Historial de Turnos</h2>
-                <table id="fichajeHistoryTable">
+                <table id="historyTable">
                     <thead>
                         <tr>
                             <th>Fecha</th>
@@ -451,12 +454,11 @@
                             <th>Acción</th>
                         </tr>
                     </thead>
-                    <tbody id="fichajeHistoryBody">
-                        <!-- Llenado dinámico -->
+                    <tbody id="historyTableBody">
+                        <!-- Carga dinámica -->
                     </tbody>
                 </table>
             </div>
-
         </div>
 
     </div>
@@ -466,8 +468,22 @@
     </div>
 </div>
 
+<!-- COMPONENTE MODAL PERSONALIZADO (REEMPLAZA ALERTS FOSILES) -->
+<div class="modal-overlay" id="customModal">
+    <div class="modal-card">
+        <div class="modal-title" id="modalTitle">Atención</div>
+        <div class="modal-body" id="modalBody">Mensaje...</div>
+        <div id="modalInputContainer" style="display: none;">
+            <input type="number" step="0.01" class="modal-input" id="modalInput" placeholder="Ej: 2.75">
+        </div>
+        <div class="modal-buttons" id="modalButtons" style="margin-top: 15px;">
+            <button class="btn" id="modalPrimaryBtn">Aceptar</button>
+        </div>
+    </div>
+</div>
+
 <script>
-    // --- LÓGICA DE PRECIOS Y CALCULADORA ---
+    // --- LÓGICA DE PRECIOS & CALCULADORA ---
     const inputs = document.querySelectorAll('.item-calc');
     const totalDisplay = document.getElementById('totalDisplay');
 
@@ -481,274 +497,277 @@
         totalDisplay.textContent = '$' + total.toLocaleString();
     }
 
-    inputs.forEach(input => input.addEventListener('input', calculateTotal));
+    inputs.forEach(input => {
+        input.addEventListener('input', calculateTotal);
+    });
 
     function resetForm() {
         inputs.forEach(input => input.value = 0);
         calculateTotal();
     }
 
-    // --- MANEJO DE ESTADO PERSISTENTE EN LOCALSTORAGE ---
-    let shiftState = JSON.parse(localStorage.getItem('afterlife_shift_state')) || {
-        ingresoTime: null,
-        ingresoTimestamp: null
-    };
+    // --- MODAL PERSONALIZADA ---
+    function showModal({ title, body, showInput = false, defaultValue = '', onAccept }) {
+        const overlay = document.getElementById('customModal');
+        const titleEl = document.getElementById('modalTitle');
+        const bodyEl = document.getElementById('modalBody');
+        const inputContainer = document.getElementById('modalInputContainer');
+        const inputEl = document.getElementById('modalInput');
+        const buttonsEl = document.getElementById('modalButtons');
 
-    let shiftLogs = JSON.parse(localStorage.getItem('afterlife_shift_logs')) || [];
+        titleEl.textContent = title || 'Aviso';
+        bodyEl.innerHTML = body || '';
 
-    // Ajustes de Horas Manuales Guardadas
-    let manualAdjustments = JSON.parse(localStorage.getItem('afterlife_manual_adjustments')) || {
-        semana: 0, // En minutos
-        mes: 0
-    };
+        if (showInput) {
+            inputContainer.style.display = 'block';
+            inputEl.value = defaultValue;
+        } else {
+            inputContainer.style.display = 'none';
+        }
 
-    const fichajeTimeInput = document.getElementById('fichajeTimeInput');
-    const activeShiftInfo = document.getElementById('activeShiftInfo');
+        buttonsEl.innerHTML = '';
+        const acceptBtn = document.createElement('button');
+        acceptBtn.className = 'btn';
+        acceptBtn.textContent = 'Aceptar';
+        acceptBtn.onclick = () => {
+            overlay.classList.remove('active');
+            if (onAccept) {
+                const val = showInput ? inputEl.value : true;
+                onAccept(val);
+            }
+        };
 
-    // Inicializar reloj del input con la hora actual
+        buttonsEl.appendChild(acceptBtn);
+
+        if (showInput) {
+            const cancelBtn = document.createElement('button');
+            cancelBtn.className = 'btn btn-danger';
+            cancelBtn.textContent = 'Cancelar';
+            cancelBtn.onclick = () => overlay.classList.remove('active');
+            buttonsEl.appendChild(cancelBtn);
+        }
+
+        overlay.classList.add('active');
+    }
+
+    // --- LÓGICA DE FICHAJE Y CONTROL DE HORAS ---
+    const shiftTimeInput = document.getElementById('shiftTimeInput');
+    const shiftStatus = document.getElementById('shiftStatus');
+
+    // Asignar hora actual por defecto al input de tiempo
     function setInputTimeNow() {
         const now = new Date();
-        fichajeTimeInput.value = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+        shiftTimeInput.value = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
     }
     setInputTimeNow();
 
-    // --- REGISTRO DE INGRESO ---
-    function registrarIngreso() {
-        const timeVal = fichajeTimeInput.value;
-        if (!timeVal) {
-            alert("Por favor selecciona una hora válida.");
-            return;
+    let activeShiftStart = localStorage.getItem('afterlife_active_shift_start') || null;
+
+    function updateShiftStatusDisplay() {
+        if (activeShiftStart) {
+            const startDate = new Date(parseInt(activeShiftStart));
+            const startFormatted = String(startDate.getHours()).padStart(2, '0') + ':' + String(startDate.getMinutes()).padStart(2, '0');
+            shiftStatus.textContent = `Turno en curso | Ingreso marcado: ${startFormatted}`;
+        } else {
+            shiftStatus.textContent = `Sin turno activo. Marca Ingreso para comenzar.`;
         }
-
-        const [hrs, mins] = timeVal.split(':').map(Number);
-        const now = new Date();
-        now.setHours(hrs, mins, 0, 0);
-
-        shiftState.ingresoTime = timeVal;
-        shiftState.ingresoTimestamp = now.getTime();
-        localStorage.setItem('afterlife_shift_state', JSON.stringify(shiftState));
-
-        updateFichajeUI();
-        alert(`Ingreso registrado a las ${timeVal}`);
     }
 
-    // --- REGISTRO DE EGRESO ---
+    function registrarIngreso() {
+        if (activeShiftStart) {
+            showModal({ title: "Aviso", body: "Ya tienes un turno activo. Marca 'Egreso' para finalizarlo primero." });
+            return;
+        }
+
+        let timeVal = shiftTimeInput.value;
+        if (!timeVal) {
+            showModal({ title: "Atención", body: "Por favor selecciona una hora de ingreso." });
+            return;
+        }
+
+        let [h, m] = timeVal.split(':').map(Number);
+        let startDate = new Date();
+        startDate.setHours(h, m, 0, 0);
+
+        activeShiftStart = startDate.getTime();
+        localStorage.setItem('afterlife_active_shift_start', activeShiftStart);
+        updateShiftStatusDisplay();
+        showModal({ title: "Ingreso Registrado", body: `Turno iniciado con éxito a las <strong>${timeVal}</strong>.` });
+    }
+
     function registrarEgreso() {
-        if (!shiftState.ingresoTimestamp) {
-            alert("No hay un ingreso activo. Por favor marca 'Ingreso' primero.");
+        if (!activeShiftStart) {
+            showModal({ title: "Aviso", body: "No tienes ningún turno activo. Marca 'Ingreso' para iniciar." });
             return;
         }
 
-        const egresoVal = fichajeTimeInput.value;
-        if (!egresoVal) {
-            alert("Por favor selecciona una hora de egreso.");
+        let timeVal = shiftTimeInput.value;
+        if (!timeVal) {
+            showModal({ title: "Atención", body: "Por favor selecciona una hora de egreso." });
             return;
         }
 
-        const [eHrs, eMins] = egresoVal.split(':').map(Number);
-        const ingresoDate = new Date(shiftState.ingresoTimestamp);
-        const egresoDate = new Date(ingresoDate);
-        egresoDate.setHours(eHrs, eMins, 0, 0);
+        let [h, m] = timeVal.split(':').map(Number);
+        let endDate = new Date();
+        endDate.setHours(h, m, 0, 0);
 
-        // Si la hora de egreso es menor a la de ingreso, asumimos cambio de día
-        if (egresoDate.getTime() <= ingresoDate.getTime()) {
-            egresoDate.setDate(egresoDate.getDate() + 1);
+        let startTimestamp = parseInt(activeShiftStart);
+        let endTimestamp = endDate.getTime();
+
+        if (endTimestamp <= startTimestamp) {
+            endTimestamp += 24 * 60 * 60 * 1000; // si pasó de medianoche
         }
 
-        const diffMinutes = Math.round((egresoDate.getTime() - ingresoDate.getTime()) / (1000 * 60));
+        let diffMs = endTimestamp - startTimestamp;
+        let diffMinutes = Math.round(diffMs / 60000);
 
-        const newLog = {
-            id: Date.now(),
-            dateStr: ingresoDate.toLocaleDateString(),
-            ingreso: shiftState.ingresoTime,
-            egreso: egresoVal,
+        let startDate = new Date(startTimestamp);
+        let startFormatted = String(startDate.getHours()).padStart(2, '0') + ':' + String(startDate.getMinutes()).padStart(2, '0');
+
+        let shiftRecord = {
+            date: startDate.toLocaleDateString(),
+            startTime: startFormatted,
+            endTime: timeVal,
             durationMinutes: diffMinutes,
-            timestamp: ingresoDate.getTime()
+            timestamp: Date.now()
         };
 
-        shiftLogs.unshift(newLog);
-        localStorage.setItem('afterlife_shift_logs', JSON.stringify(shiftLogs));
+        let shifts = JSON.parse(localStorage.getItem('afterlife_shifts_list')) || [];
+        shifts.unshift(shiftRecord);
+        localStorage.setItem('afterlife_shifts_list', JSON.stringify(shifts));
 
-        // Limpiar estado activo
-        shiftState.ingresoTime = null;
-        shiftState.ingresoTimestamp = null;
-        localStorage.setItem('afterlife_shift_state', JSON.stringify(shiftState));
+        localStorage.removeItem('afterlife_active_shift_start');
+        activeShiftStart = null;
+        updateShiftStatusDisplay();
 
-        updateFichajeUI();
-        renderHistory();
-        updateDashboardCharts();
-        alert(`Egreso registrado (${formatMinutesToHHMM(diffMinutes)} - ${(diffMinutes/60).toFixed(2)}h)`);
-    }
+        let hrs = Math.floor(diffMinutes / 60);
+        let mins = diffMinutes % 60;
+        let decHrs = (diffMinutes / 60).toFixed(2);
 
-    function updateFichajeUI() {
-        if (shiftState.ingresoTime) {
-            activeShiftInfo.textContent = `Turno en curso | Ingreso marcado: ${shiftState.ingresoTime}`;
-        } else {
-            activeShiftInfo.textContent = "Sin turno activo. Listo para fichar.";
-        }
-    }
-
-    // --- CÁLCULO Y DIBUJO DE LOS ANILLOS DE PROGRESO ---
-    function updateDashboardCharts() {
-        const now = new Date();
-        const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-
-        // Calcular inicio de la semana (Lunes)
-        const dayOfWeek = now.getDay() || 7; // 1 = Lunes, 7 = Domingo
-        const startOfWeek = new Date(now);
-        startOfWeek.setDate(now.getDate() - (dayOfWeek - 1));
-        startOfWeek.setHours(0, 0, 0, 0);
-        const startOfWeekMs = startOfWeek.getTime();
-
-        // Inicio del Mes
-        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
-
-        let hoyMins = 0;
-        let semanaMins = manualAdjustments.semana || 0;
-        let mesMins = manualAdjustments.mes || 0;
-
-        shiftLogs.forEach(log => {
-            const logTime = log.timestamp || 0;
-            if (logTime >= startOfDay) hoyMins += log.durationMinutes;
-            if (logTime >= startOfWeekMs) semanaMins += log.durationMinutes;
-            if (logTime >= startOfMonth) mesMins += log.durationMinutes;
+        renderAllData();
+        showModal({
+            title: "Egreso Registrado",
+            body: `Turno finalizado.<br>Tiempo registrado: <strong>${hrs}h ${mins}m (${decHrs} hrs)</strong>.`
         });
-
-        // Sumar turno activo si está en curso
-        if (shiftState.ingresoTimestamp) {
-            const activeMins = Math.max(0, Math.round((Date.now() - shiftState.ingresoTimestamp) / (1000 * 60)));
-            hoyMins += activeMins;
-            semanaMins += activeMins;
-            mesMins += activeMins;
-        }
-
-        // Actualizar UI Hoy
-        document.getElementById('textHoyMain').textContent = formatMinutesToHHMM(hoyMins);
-        document.getElementById('textHoySub').textContent = `${(hoyMins / 60).toFixed(2)}h`;
-        setCircleProgress('circleHoy', hoyMins, 7 * 60); // Meta ref diaria: 7h
-
-        // Actualizar UI Semana (META OBLIGATORIA DE 7.00 HORAS)
-        const metaSemanaMins = 7 * 60;
-        document.getElementById('textSemanaMain').textContent = formatMinutesToHHMM(semanaMins);
-        document.getElementById('textSemanaSub').textContent = `${(semanaMins / 60).toFixed(2)}h / 7h`;
-        setCircleProgress('circleSemana', semanaMins, metaSemanaMins);
-
-        // Actualizar UI Mes
-        document.getElementById('textMesMain').textContent = formatMinutesToHHMM(mesMins);
-        document.getElementById('textMesSub').textContent = `${(mesMins / 60).toFixed(2)}h`;
-        setCircleProgress('circleMes', mesMins, 30 * 60);
-
-        // Badge Decimal
-        const semanaDecimal = (semanaMins / 60).toFixed(2);
-        document.getElementById('semanaDecimalDisplay').textContent = `${semanaDecimal} horas`;
-
-        // Horas Faltantes
-        const faltantesMins = Math.max(0, metaSemanaMins - semanaMins);
-        const faltantesDecimal = (faltantesMins / 60).toFixed(2);
-        
-        if (faltantesMins === 0) {
-            document.getElementById('faltantesDisplay').textContent = "¡Meta de 7h Completada! 🎉";
-            document.getElementById('faltantesDisplay').style.color = "#03dac6";
-        } else {
-            document.getElementById('faltantesDisplay').textContent = `${faltantesDecimal} hrs (${formatMinutesToHHMM(faltantesMins)})`;
-            document.getElementById('faltantesDisplay').style.color = "#ff8b9e";
-        }
     }
 
-    function setCircleProgress(elementId, currentMins, targetMins) {
+    // --- GRÁFICAS & RENDERING ---
+    function setCircleProgress(elementId, percent) {
         const circle = document.getElementById(elementId);
-        if (!circle) return;
-
-        const maxOffset = 220; // Perímetro aproximado del círculo r=35
-        let percent = currentMins / targetMins;
-        if (percent > 1) percent = 1;
-
-        const offset = maxOffset - (percent * maxOffset);
+        const radius = 40;
+        const circumference = 2 * Math.PI * radius; // ~251.2
+        const p = Math.min(Math.max(percent, 0), 100);
+        const offset = circumference - (p / 100) * circumference;
         circle.style.strokeDashoffset = offset;
     }
 
-    function formatMinutesToHHMM(totalMinutes) {
-        const hrs = Math.floor(totalMinutes / 60);
-        const mins = totalMinutes % 60;
-        return String(hrs).padStart(2, '0') + ':' + String(mins).padStart(2, '0');
-    }
+    function renderAllData() {
+        let shifts = JSON.parse(localStorage.getItem('afterlife_shifts_list')) || [];
+        let manualWeekMinutes = parseInt(localStorage.getItem('afterlife_manual_week_minutes')) || 0;
 
-    // --- EDICIÓN MANUAL DE HORAS ---
-    function abrirEdicionManual() {
-        const actualSemanaHours = ((manualAdjustments.semana || 0) / 60).toFixed(2);
-        const newHoursStr = prompt("Ajustar horas acumuladas para la semana actual (en formato decimal, ej: 2.75 o 5.5):", actualSemanaHours);
-        
-        if (newHoursStr === null) return;
+        let totalWeekMinutes = manualWeekMinutes;
+        let totalTodayMinutes = 0;
+        let totalMonthMinutes = 0;
 
-        const newHoursParsed = parseFloat(newHoursStr);
-        if (isNaN(newHoursParsed) || newHoursParsed < 0) {
-            alert("Por favor ingresa un número válido.");
-            return;
-        }
-
-        manualAdjustments.semana = Math.round(newHoursParsed * 60);
-        manualAdjustments.mes = manualAdjustments.semana; // Sincroniza si es necesario
-        localStorage.setItem('afterlife_manual_adjustments', JSON.stringify(manualAdjustments));
-
-        updateDashboardCharts();
-        alert("¡Horas ajustadas correctamente!");
-    }
-
-    // --- RENDERIZADO Y GESTIÓN DEL HISTORIAL ---
-    function renderHistory() {
-        const tbody = document.getElementById('fichajeHistoryBody');
+        let tbody = document.getElementById('historyTableBody');
         tbody.innerHTML = '';
 
-        if (shiftLogs.length === 0) {
+        if (shifts.length === 0) {
             tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#888;">No hay turnos registrados</td></tr>`;
-            return;
         }
 
-        shiftLogs.forEach((log, index) => {
-            const tr = document.createElement('tr');
-            const hhmm = formatMinutesToHHMM(log.durationMinutes);
-            const decimalHrs = (log.durationMinutes / 60).toFixed(2) + ' h';
+        shifts.forEach((shift, index) => {
+            totalWeekMinutes += shift.durationMinutes;
+            totalMonthMinutes += shift.durationMinutes;
 
-            tr.innerHTML = `
-                <td>${log.dateStr}</td>
-                <td><span style="color:#9fa8da;">${log.ingreso}</span> ➔ <span style="color:#ff8b9e;">${log.egreso}</span></td>
-                <td><strong>${hhmm}</strong></td>
-                <td><span class="decimal-badge" style="font-size:0.8rem; padding: 1px 6px;">${decimalHrs}</span></td>
-                <td><button class="btn btn-danger" style="padding: 2px 6px; font-size: 0.75rem;" onclick="eliminarFichaje(${index})">X</button></td>
+            let todayStr = new Date().toLocaleDateString();
+            if (shift.date === todayStr) {
+                totalTodayMinutes += shift.durationMinutes;
+            }
+
+            let decVal = (shift.durationMinutes / 60).toFixed(2);
+            let hrs = Math.floor(shift.durationMinutes / 60);
+            let mins = shift.durationMinutes % 60;
+            let timeHHMM = `${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')}`;
+
+            let row = tbody.insertRow();
+            row.innerHTML = `
+                <td>${shift.date}</td>
+                <td>${shift.startTime} - ${shift.endTime}</td>
+                <td>${timeHHMM}</td>
+                <td style="color: var(--teal-color); font-weight: bold;">${decVal}h</td>
+                <td><button class="btn btn-danger" style="padding:2px 6px; font-size:0.75rem;" onclick="deleteShift(${index})">Eliminar</button></td>
             `;
-            tbody.appendChild(tr);
+        });
+
+        // HOY
+        let todayHrs = Math.floor(totalTodayMinutes / 60);
+        let todayMins = totalTodayMinutes % 60;
+        let todayDec = (totalTodayMinutes / 60).toFixed(2);
+        document.getElementById('textTodayHHMM').textContent = `${String(todayHrs).padStart(2,'0')}:${String(todayMins).padStart(2,'0')}`;
+        document.getElementById('textTodayDec').textContent = `${todayDec}h`;
+        setCircleProgress('circleToday', (totalTodayMinutes / (7 * 60)) * 100);
+
+        // SEMANA (Meta 7 horas = 420 minutos)
+        let weekHrs = Math.floor(totalWeekMinutes / 60);
+        let weekMins = totalWeekMinutes % 60;
+        let weekDec = (totalWeekMinutes / 60).toFixed(2);
+        document.getElementById('textWeekHHMM').textContent = `${String(weekHrs).padStart(2,'0')}:${String(weekMins).padStart(2,'0')}`;
+        document.getElementById('textWeekDec').textContent = `${weekDec}h / 7h`;
+        setCircleProgress('circleWeek', (totalWeekMinutes / 420) * 100);
+
+        // MES
+        let monthHrs = Math.floor(totalMonthMinutes / 60);
+        let monthMins = totalMonthMinutes % 60;
+        let monthDec = (totalMonthMinutes / 60).toFixed(2);
+        document.getElementById('textMonthHHMM').textContent = `${String(monthHrs).padStart(2,'0')}:${String(monthMins).padStart(2,'0')}`;
+        document.getElementById('textMonthDec').textContent = `${monthDec}h`;
+        setCircleProgress('circleMonth', (totalMonthMinutes / (30 * 60)) * 100);
+
+        // DISPLAY TOTAL Y RESTANTE
+        document.getElementById('decimalTotalDisplay').textContent = `${weekDec} horas`;
+
+        let remainingMinutes = 420 - totalWeekMinutes;
+        if (remainingMinutes > 0) {
+            let remHrs = Math.floor(remainingMinutes / 60);
+            let remMins = remainingMinutes % 60;
+            let remDec = (remainingMinutes / 60).toFixed(2);
+            document.getElementById('remainingWeekDisplay').textContent = 
+                `Faltan para la meta semanal (7h): ${remDec} hrs (${String(remHrs).padStart(2,'0')}:${String(remMins).padStart(2,'0')})`;
+            document.getElementById('remainingWeekDisplay').style.color = '#ff8b9e';
+        } else {
+            document.getElementById('remainingWeekDisplay').textContent = `¡Meta semanal de 7 horas completada! 🎉`;
+            document.getElementById('remainingWeekDisplay').style.color = 'var(--teal-color)';
+        }
+    }
+
+    function deleteShift(index) {
+        let shifts = JSON.parse(localStorage.getItem('afterlife_shifts_list')) || [];
+        shifts.splice(index, 1);
+        localStorage.setItem('afterlife_shifts_list', JSON.stringify(shifts));
+        renderAllData();
+    }
+
+    function promptEditWeekHours() {
+        let currentDec = (parseInt(localStorage.getItem('afterlife_manual_week_minutes') || 0) / 60).toFixed(2);
+        showModal({
+            title: "Editar Horas Manuales",
+            body: "Ajustar horas acumuladas para la semana actual (en formato decimal, ej: <strong>2.75</strong> o <strong>5.50</strong>):",
+            showInput: true,
+            defaultValue: currentDec,
+            onAccept: (val) => {
+                let parsedDec = parseFloat(val) || 0;
+                let minutes = Math.round(parsedDec * 60);
+                localStorage.setItem('afterlife_manual_week_minutes', minutes);
+                renderAllData();
+            }
         });
     }
 
-    function eliminarFichaje(index) {
-        if (confirm("¿Seguro que deseas eliminar este fichaje?")) {
-            shiftLogs.splice(index, 1);
-            localStorage.setItem('afterlife_shift_logs', JSON.stringify(shiftLogs));
-            renderHistory();
-            updateDashboardCharts();
-        }
-    }
-
-    // Actualizar dinámicamente si hay turno activo en segundo plano
-    setInterval(() => {
-        if (shiftState.ingresoTimestamp) {
-            updateDashboardCharts();
-        }
-    }, 30000);
-
-    // Carga Inicial
-    updateFichajeUI();
-    renderHistory();
-    updateDashboardCharts();
+    // Inicialización al cargar la página
+    updateShiftStatusDisplay();
+    renderAllData();
 </script>
 
 </body>
 </html>
-```
-
-### Cambios destacados que agregamos:
-1. **Fichaje por Ingreso y Egreso:** Puedes presionar **"Ingreso"** (en tono azul/morado) para iniciar y luego **"Egreso"** (en tono rojo/coral) para finalizar. Toma automáticamente la hora actual o la que indiques en el reloj.
-2. **Formato Decimal / Centesimal de Trabajo:** Calcula exactamente en formato decimal (ejemplo: **2.75 horas**) sincronizándolo con la lógica del juego.
-3. **Anillos de Progreso SVG (Hoy, Semana, Mes):**
-   - **Semana:** Diseñado específicamente con la **meta de 7.00 horas semanales**. Muestra cuántas llevas, cuántas te faltan e indica cuando completas la meta.
-4. **Edición Manual Práctica:** Con el botón *"Ajustar / Editar Horas Manualmente"* puedes ingresar directamente tus horas acumuladas en formato decimal si deseas corregirlas.
