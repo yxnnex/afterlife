@@ -6,10 +6,12 @@
     <title>Precios Afterlife y Control de Horas</title>
     <style>
         :root {
-            --card-bg: rgba(20, 20, 25, 0.85);
+            --card-bg: rgba(20, 20, 25, 0.88);
             --text-color: #e0e0e0;
-            --accent-color: #bb86fc;
-            --accent-hover: #3700b3;
+            --accent-purple: #bb86fc;
+            --accent-cyan: #03dac6;
+            --btn-ingreso: #3f51b5;
+            --btn-egreso: #ff5252;
             --border-color: #333;
         }
 
@@ -22,6 +24,7 @@
             min-height: 100vh;
             position: relative;
             overflow-x: hidden;
+            background-color: #0d0d11;
         }
 
         #bgVideo {
@@ -35,142 +38,246 @@
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
             position: relative;
             z-index: 1;
         }
-        h1, h2 {
+        
+        h1, h2, h3 {
             text-align: center;
-            color: var(--accent-color);
+            color: var(--accent-purple);
+            margin-top: 0;
         }
+        
         h1 {
             margin-bottom: 25px;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            letter-spacing: 1px;
         }
+
         .main-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
-            align-items: start;
-        }
-        @media (max-width: 900px) {
-            .main-grid { grid-template-columns: 1fr; }
-        }
-        .prices-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
+            align-items: start;
         }
-        @media (max-width: 768px) {
-            .prices-container { grid-template-columns: 1fr; }
+
+        @media (max-width: 950px) {
+            .main-grid { grid-template-columns: 1fr; }
         }
+
         .card {
             background-color: var(--card-bg);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            box-shadow: 0 6px 24px rgba(0,0,0,0.6);
             margin-bottom: 20px;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 10px;
         }
+
         th, td {
-            padding: 8px;
+            padding: 8px 10px;
             text-align: left;
             border-bottom: 1px solid var(--border-color);
             font-size: 0.9rem;
         }
-        th {
-            color: var(--accent-color);
-        }
+
+        th { color: var(--accent-purple); }
+
         input[type="number"], input[type="time"] {
-            padding: 5px;
-            background: rgba(30, 30, 35, 0.9);
+            padding: 6px;
+            background: rgba(30, 30, 38, 0.9);
             border: 1px solid var(--border-color);
             color: #fff;
-            border-radius: 4px;
+            border-radius: 6px;
             text-align: center;
         }
-        input[type="number"] { width: 50px; }
+
+        input[type="number"] { width: 55px; }
         input[type="time"] { width: 110px; font-size: 1rem; }
 
-        .total-section {
-            background-color: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border: 2px solid var(--accent-color);
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            height: fit-content;
+        /* --- CONTROLES DE INGRESO / EGRESO --- */
+        .fichaje-box {
+            background: rgba(15, 15, 20, 0.7);
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
-        .total-amount {
-            font-size: 2.2rem;
-            color: #03dac6;
-            font-weight: bold;
-            margin: 15px 0;
-            text-shadow: 0 0 10px rgba(3, 218, 198, 0.4);
-        }
-        .timer-display {
-            font-size: 2.2rem;
-            color: #03dac6;
-            font-weight: bold;
-            text-align: center;
-            font-family: monospace;
-            margin: 10px 0;
-            text-shadow: 0 0 10px rgba(3, 218, 198, 0.4);
-        }
-        .shift-info {
-            font-size: 0.9rem;
-            text-align: center;
-            color: #b0bec5;
-            margin-bottom: 10px;
-        }
-        .btn-group {
+
+        .fichaje-controls {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             justify-content: center;
+            align-items: center;
             flex-wrap: wrap;
-            margin-top: 15px;
+            margin: 15px 0;
         }
+
+        .btn-fichaje {
+            border: none;
+            padding: 10px 22px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #fff;
+            font-size: 0.95rem;
+            transition: transform 0.1s, filter 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }
+
+        .btn-fichaje:active { transform: scale(0.97); }
+
+        .btn-ingreso {
+            background-color: var(--btn-ingreso);
+        }
+        .btn-ingreso:hover { filter: brightness(1.2); }
+
+        .btn-egreso {
+            background-color: var(--btn-egreso);
+        }
+        .btn-egreso:hover { filter: brightness(1.2); }
+
+        /* --- BOTONES GENERALES --- */
         .btn {
-            background-color: var(--accent-color);
+            background-color: var(--accent-purple);
             color: #121212;
             border: none;
-            padding: 8px 15px;
+            padding: 8px 16px;
             font-weight: bold;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             transition: background 0.2s;
         }
-        .btn:hover {
-            background-color: #03dac6;
-        }
+
+        .btn:hover { background-color: var(--accent-cyan); }
+
         .btn-danger {
             background-color: #cf6679;
             color: #121212;
         }
-        .btn-danger:hover {
-            background-color: #ff8b9e;
-        }
+        .btn-danger:hover { background-color: #ff8b9e; }
+
         .btn-edit {
             background-color: transparent;
-            border: 1px solid var(--accent-color);
-            color: var(--accent-color);
-            padding: 2px 6px;
+            border: 1px solid var(--accent-purple);
+            color: var(--accent-purple);
+            padding: 3px 8px;
             font-size: 0.8rem;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
-            margin-left: 8px;
         }
         .btn-edit:hover {
-            background-color: var(--accent-color);
+            background-color: var(--accent-purple);
             color: #121212;
         }
+
+        /* --- GRÁFICOS CIRCULARES --- */
+        .charts-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .chart-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100px;
+        }
+
+        .chart-title {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #9fa8da;
+            margin-bottom: 8px;
+        }
+
+        .circle-wrapper {
+            position: relative;
+            width: 85px;
+            height: 85px;
+        }
+
+        .circle-svg {
+            transform: rotate(-90deg);
+            width: 100%;
+            height: 100%;
+        }
+
+        .circle-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 7;
+        }
+
+        .circle-progress {
+            fill: none;
+            stroke: #5c6bc0;
+            stroke-width: 7;
+            stroke-linecap: round;
+            stroke-dasharray: 220;
+            stroke-dashoffset: 220;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .circle-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            width: 100%;
+        }
+
+        .circle-text .main-val {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #ffffff;
+            display: block;
+            line-height: 1.1;
+        }
+
+        .circle-text .sub-val {
+            font-size: 0.65rem;
+            color: #a0a0a0;
+            display: block;
+            margin-top: 2px;
+        }
+
+        .total-amount {
+            font-size: 2.2rem;
+            color: var(--accent-cyan);
+            font-weight: bold;
+            margin: 10px 0;
+            text-shadow: 0 0 10px rgba(3, 218, 198, 0.4);
+            text-align: center;
+        }
+
+        .decimal-badge {
+            display: inline-block;
+            background: rgba(3, 218, 198, 0.15);
+            color: var(--accent-cyan);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            border: 1px solid rgba(3, 218, 198, 0.3);
+        }
+
         .note {
             font-size: 0.85rem;
             color: #ccc;
@@ -183,21 +290,20 @@
 </head>
 <body>
 
-    <!-- Video de fondo en bucle -->
+    <!-- Video de fondo -->
     <video autoplay muted loop id="bgVideo">
         <source src="mylivewallpapers-com-Puddle-Cloud-Reflections-FHD.mp4" type="video/mp4">
     </video>
 
 <div class="container">
-    <h1>PRECIOS AFTERLIFE Y HORAS</h1>
+    <h1>PRECIOS AFTERLIFE Y CONTROL DE HORAS</h1>
 
-    <!-- SECCIÓN CENTRAL: Precios / Calculadora (Izquierda) y Total (Derecha) -->
     <div class="main-grid">
         
-        <!-- Columna Izquierda: Precios y Calculadora -->
-        <div class="prices-container">
-            <!-- Lista de Precios Estática -->
-            <div class="card" style="margin-bottom: 0;">
+        <!-- COLUMNA IZQUIERDA: Precios, Calculadora y Fichaje -->
+        <div>
+            <!-- Lista de Precios -->
+            <div class="card">
                 <h2>Lista de Precios</h2>
                 <table>
                     <tr><th>Concepto</th><th>Precio</th></tr>
@@ -216,10 +322,9 @@
                 </table>
             </div>
 
-            <!-- Calculadora de Totales -->
-            <div class="card" style="margin-bottom: 0;">
+            <!-- Calculadora de Cobro -->
+            <div class="card">
                 <h2>Calculadora de Cobro</h2>
-                <p style="font-size: 0.85rem;">Selecciona la cantidad:</p>
                 <table>
                     <tr><th>Ítem</th><th>Precio</th><th>Cant.</th></tr>
                     <tr><td>Rep. Básica</td><td>$150</td><td><input type="number" class="item-calc" data-price="150" value="0" min="0"></td></tr>
@@ -235,70 +340,134 @@
                     <tr><td>Piezas Separadas</td><td>$300</td><td><input type="number" class="item-calc" data-price="300" value="0" min="0"></td></tr>
                 </table>
             </div>
+
+            <!-- MÓDULO DE FICHAJE DE HORAS -->
+            <div class="card">
+                <h2>Fichaje de Turno (Ingreso / Egreso)</h2>
+                <div class="fichaje-box">
+                    <div style="text-align: center; font-size: 0.9rem; color: #aaa; margin-bottom: 8px;">
+                        Selecciona la hora manualmente o se tomará la hora exacta del clic:
+                    </div>
+                    
+                    <div class="fichaje-controls">
+                        <div>
+                            <span style="font-size: 0.8rem; display: block; margin-bottom: 4px;">Hora:</span>
+                            <input type="time" id="fichajeTimeInput">
+                        </div>
+                        <button class="btn-fichaje btn-ingreso" onclick="registrarIngreso()">Ingreso</button>
+                        <button class="btn-fichaje btn-egreso" onclick="registrarEgreso()">Egreso</button>
+                    </div>
+
+                    <div id="activeShiftInfo" style="text-align: center; font-size: 0.85rem; color: var(--accent-cyan); min-height: 20px; margin-top: 5px;"></div>
+                </div>
+            </div>
         </div>
 
-        <!-- Columna Derecha: Total y Control de Horas por Reloj -->
+        <!-- COLUMNA DERECHA: Total de Cobro, Gráficos de Progreso y Edición -->
         <div>
-            <!-- Sección del Total -->
-            <div class="total-section card">
+            <!-- Total a Cobrar -->
+            <div class="card" style="text-align: center;">
                 <h3>Total a Transferir / Cobrar</h3>
                 <div class="total-amount" id="totalDisplay">$0</div>
                 <button class="btn" onclick="resetForm()">Reiniciar Calculadora</button>
             </div>
 
-            <!-- Control de Horas Sincronizado por Reloj -->
-            <div class="card" style="margin-top: 20px;">
-                <h2>Control de Turno</h2>
+            <!-- ANILLOS DE PROGRESO DE HORAS (Estilo Captura) -->
+            <div class="card">
+                <h2>Progreso de Horas</h2>
                 
-                <div id="setupShiftSection" style="text-align: center; margin: 15px 0;">
-                    <label style="display: block; margin-bottom: 8px; font-size: 0.9rem;">Hora de Ingreso:</label>
-                    <input type="time" id="startTimeInput">
-                    <div style="margin-top: 15px;">
-                        <button class="btn" onclick="startShift()">Iniciar Turno</button>
+                <div class="charts-container">
+                    <!-- HOY -->
+                    <div class="chart-card">
+                        <span class="chart-title">Hoy</span>
+                        <div class="circle-wrapper">
+                            <svg class="circle-svg" viewBox="0 0 80 80">
+                                <circle class="circle-bg" cx="40" cy="40" r="35" />
+                                <circle class="circle-progress" id="circleHoy" cx="40" cy="40" r="35" />
+                            </svg>
+                            <div class="circle-text">
+                                <span class="main-val" id="textHoyMain">00:00</span>
+                                <span class="sub-val" id="textHoySub">0.00h</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SEMANA (Meta de 7 horas) -->
+                    <div class="chart-card">
+                        <span class="chart-title">Semana</span>
+                        <div class="circle-wrapper">
+                            <svg class="circle-svg" viewBox="0 0 80 80">
+                                <circle class="circle-bg" cx="40" cy="40" r="35" />
+                                <circle class="circle-progress" id="circleSemana" cx="40" cy="40" r="35" />
+                            </svg>
+                            <div class="circle-text">
+                                <span class="main-val" id="textSemanaMain">00:00</span>
+                                <span class="sub-val" id="textSemanaSub">Meta: 7.00h</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MES -->
+                    <div class="chart-card">
+                        <span class="chart-title">Mes</span>
+                        <div class="circle-wrapper">
+                            <svg class="circle-svg" viewBox="0 0 80 80">
+                                <circle class="circle-bg" cx="40" cy="40" r="35" />
+                                <circle class="circle-progress" id="circleMes" cx="40" cy="40" r="35" />
+                            </svg>
+                            <div class="circle-text">
+                                <span class="main-val" id="textMesMain">00:00</span>
+                                <span class="sub-val" id="textMesSub">0.00h</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div id="activeShiftSection" style="display: none; text-align: center; margin: 10px 0;">
-                    <div class="shift-info" id="shiftStartInfo">Ingreso: --:--</div>
-                    <div class="timer-display" id="timerDisplay">00:00:00</div>
-                    <div class="btn-group">
-                        <button class="btn btn-danger" onclick="endShift()">Finalizar Turno</button>
+                <!-- Resumen en Formato Centesimal / Decimal del Sistema -->
+                <div style="text-align: center; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                    <div style="margin-bottom: 8px;">
+                        <span>Formato Trabajo (Decimal): </span>
+                        <span class="decimal-badge" id="semanaDecimalDisplay">0.00 horas</span>
                     </div>
-                </div>
+                    <div style="font-size: 0.85rem; color: #aaa; margin-bottom: 12px;">
+                        Faltan para la meta semanal (7h): <strong id="faltantesDisplay" style="color:#ff8b9e;">7.00 hrs</strong>
+                    </div>
 
-                <!-- Botón para acumular al total general con opción de editar -->
-                <div style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 15px; text-align: center;">
-                    <div style="font-size: 0.85rem; margin-bottom: 8px; color: #aaa;">
-                        Acumulado turno actual: <span id="accumulatedTimeDisplay" style="color:#03dac6; font-weight:bold;">0h 0m</span>
-                        <button class="btn-edit" onclick="editAccumulatedTime()" title="Editar tiempo manualmente">✎ Editar</button>
-                    </div>
-                    <button class="btn" onclick="saveWeek()">Guardar y Enviar a Historial</button>
+                    <!-- Botón para Editar Manualmente las Horas -->
+                    <button class="btn-edit" onclick="abrirEdicionManual()">✎ Ajustar / Editar Horas Manualmente</button>
                 </div>
             </div>
+
+            <!-- Historial de Fichajes -->
+            <div class="card">
+                <h2>Historial de Turnos</h2>
+                <table id="fichajeHistoryTable">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Ingres. / Egres.</th>
+                            <th>Total (hh:mm)</th>
+                            <th>Decimal</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fichajeHistoryBody">
+                        <!-- Llenado dinámico -->
+                    </tbody>
+                </table>
+            </div>
+
         </div>
 
     </div>
 
-    <!-- SECCIÓN INFERIOR: Historial de Semanas Guardadas -->
-    <div class="card" style="margin-top: 30px;">
-        <h2>Historial de Horas Acumuladas <span id="totalGeneralHeader" style="color:#03dac6; font-size:1.2rem;">(Total: 0h 0m)</span></h2>
-        <table id="historyTable">
-            <tr>
-                <th>Semana / Fecha</th>
-                <th>Tiempo Acumulado</th>
-                <th>Acción</th>
-            </tr>
-            <!-- Se llena dinámicamente -->
-        </table>
-    </div>
-    
     <div class="note">
         (Todo lo que no sea tuning lo cobran a su cuenta, o sea les transfieren los clientes)
     </div>
 </div>
 
 <script>
-    // --- LÓGICA DE PRECIOS ---
+    // --- LÓGICA DE PRECIOS Y CALCULADORA ---
     const inputs = document.querySelectorAll('.item-calc');
     const totalDisplay = document.getElementById('totalDisplay');
 
@@ -312,222 +481,274 @@
         totalDisplay.textContent = '$' + total.toLocaleString();
     }
 
-    inputs.forEach(input => {
-        input.addEventListener('input', calculateTotal);
-    });
+    inputs.forEach(input => input.addEventListener('input', calculateTotal));
 
     function resetForm() {
         inputs.forEach(input => input.value = 0);
         calculateTotal();
     }
 
-    // --- LÓGICA DE TIEMPO Y TOTAL GENERAL ---
-    let totalAccumulatedSeconds = parseInt(
-        localStorage.getItem('afterlife_total_seconds') || 
-        localStorage.getItem('afterlife_seconds') || 
-        0
-    );
-    
-    let shiftStartTime = localStorage.getItem('afterlife_shift_start');
-    
-    const setupShiftSection = document.getElementById('setupShiftSection');
-    const activeShiftSection = document.getElementById('activeShiftSection');
-    const startTimeInput = document.getElementById('startTimeInput');
-    const shiftStartInfo = document.getElementById('shiftStartInfo');
-    const timerDisplay = document.getElementById('timerDisplay');
-    const accumulatedTimeDisplay = document.getElementById('accumulatedTimeDisplay');
-    const totalGeneralHeader = document.getElementById('totalGeneralHeader');
+    // --- MANEJO DE ESTADO PERSISTENTE EN LOCALSTORAGE ---
+    let shiftState = JSON.parse(localStorage.getItem('afterlife_shift_state')) || {
+        ingresoTime: null,
+        ingresoTimestamp: null
+    };
 
-    const nowInit = new Date();
-    startTimeInput.value = String(nowInit.getHours()).padStart(2, '0') + ':' + String(nowInit.getMinutes()).padStart(2, '0');
+    let shiftLogs = JSON.parse(localStorage.getItem('afterlife_shift_logs')) || [];
 
-    // Función auxiliar para convertir texto de tiempo ("Xh Ym Zs") a segundos totales
-    function parseTimeStringToSeconds(timeStr) {
-        let hours = 0, minutes = 0, seconds = 0;
-        let hMatch = timeStr.match(/(\d+)h/);
-        let mMatch = timeStr.match(/(\d+)m/);
-        let sMatch = timeStr.match(/(\d+)s/);
-        if (hMatch) hours = parseInt(hMatch[1]) || 0;
-        if (mMatch) minutes = parseInt(mMatch[1]) || 0;
-        if (sMatch) seconds = parseInt(sMatch[1]) || 0;
-        return (hours * 3600) + (minutes * 60) + seconds;
+    // Ajustes de Horas Manuales Guardadas
+    let manualAdjustments = JSON.parse(localStorage.getItem('afterlife_manual_adjustments')) || {
+        semana: 0, // En minutos
+        mes: 0
+    };
+
+    const fichajeTimeInput = document.getElementById('fichajeTimeInput');
+    const activeShiftInfo = document.getElementById('activeShiftInfo');
+
+    // Inicializar reloj del input con la hora actual
+    function setInputTimeNow() {
+        const now = new Date();
+        fichajeTimeInput.value = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
     }
+    setInputTimeNow();
 
-    function updateDisplays() {
-        // 1. Tiempo del turno actual pendiente de guardar
-        let currentSecs = totalAccumulatedSeconds;
-        if (shiftStartTime) {
-            let activeDiff = Math.floor((Date.now() - parseInt(shiftStartTime)) / 1000);
-            if (activeDiff > 0) currentSecs += activeDiff;
+    // --- REGISTRO DE INGRESO ---
+    function registrarIngreso() {
+        const timeVal = fichajeTimeInput.value;
+        if (!timeVal) {
+            alert("Por favor selecciona una hora válida.");
+            return;
         }
 
-        let hrsAcc = Math.floor(currentSecs / 3600);
-        let minsAcc = Math.floor((currentSecs % 3600) / 60);
-        accumulatedTimeDisplay.textContent = `${hrsAcc}h ${minsAcc}m`;
+        const [hrs, mins] = timeVal.split(':').map(Number);
+        const now = new Date();
+        now.setHours(hrs, mins, 0, 0);
 
-        // 2. Sumar el turno actual + TODAS las semanas guardadas en el historial para el título
-        let totalGeneralSecs = currentSecs;
-        let history = JSON.parse(localStorage.getItem('afterlife_history')) || [];
-        history.forEach(item => {
-            totalGeneralSecs += parseTimeStringToSeconds(item.time);
-        });
+        shiftState.ingresoTime = timeVal;
+        shiftState.ingresoTimestamp = now.getTime();
+        localStorage.setItem('afterlife_shift_state', JSON.stringify(shiftState));
 
-        let totalHrs = Math.floor(totalGeneralSecs / 3600);
-        let totalMins = Math.floor((totalGeneralSecs % 3600) / 60);
-        totalGeneralHeader.textContent = `(Total general: ${totalHrs}h ${totalMins}m)`;
+        updateFichajeUI();
+        alert(`Ingreso registrado a las ${timeVal}`);
     }
 
-    function editAccumulatedTime() {
-        let currentSecsRef = totalAccumulatedSeconds;
-        if (shiftStartTime) {
-            let activeDiff = Math.floor((Date.now() - parseInt(shiftStartTime)) / 1000);
-            if (activeDiff > 0) currentSecsRef += activeDiff;
+    // --- REGISTRO DE EGRESO ---
+    function registrarEgreso() {
+        if (!shiftState.ingresoTimestamp) {
+            alert("No hay un ingreso activo. Por favor marca 'Ingreso' primero.");
+            return;
         }
 
-        let currentHours = Math.floor(currentSecsRef / 3600);
-        let currentMinutes = Math.floor((currentSecsRef % 3600) / 60);
-        
-        let inputHours = prompt("Ingresa las horas acumuladas del turno actual:", currentHours);
-        if (inputHours === null) return;
-        
-        let inputMinutes = prompt("Ingresa los minutos adicionales:", currentMinutes);
-        if (inputMinutes === null) return;
-
-        let parsedHours = parseInt(inputHours) || 0;
-        let parsedMinutes = parseInt(inputMinutes) || 0;
-
-        totalAccumulatedSeconds = (parsedHours * 3600) + (parsedMinutes * 60);
-        
-        if (shiftStartTime) {
-            shiftStartTime = Date.now();
-            localStorage.setItem('afterlife_shift_start', shiftStartTime);
+        const egresoVal = fichajeTimeInput.value;
+        if (!egresoVal) {
+            alert("Por favor selecciona una hora de egreso.");
+            return;
         }
 
-        localStorage.setItem('afterlife_total_seconds', totalAccumulatedSeconds);
-        updateDisplays();
-        alert("¡Tiempo actualizado con éxito!");
+        const [eHrs, eMins] = egresoVal.split(':').map(Number);
+        const ingresoDate = new Date(shiftState.ingresoTimestamp);
+        const egresoDate = new Date(ingresoDate);
+        egresoDate.setHours(eHrs, eMins, 0, 0);
+
+        // Si la hora de egreso es menor a la de ingreso, asumimos cambio de día
+        if (egresoDate.getTime() <= ingresoDate.getTime()) {
+            egresoDate.setDate(egresoDate.getDate() + 1);
+        }
+
+        const diffMinutes = Math.round((egresoDate.getTime() - ingresoDate.getTime()) / (1000 * 60));
+
+        const newLog = {
+            id: Date.now(),
+            dateStr: ingresoDate.toLocaleDateString(),
+            ingreso: shiftState.ingresoTime,
+            egreso: egresoVal,
+            durationMinutes: diffMinutes,
+            timestamp: ingresoDate.getTime()
+        };
+
+        shiftLogs.unshift(newLog);
+        localStorage.setItem('afterlife_shift_logs', JSON.stringify(shiftLogs));
+
+        // Limpiar estado activo
+        shiftState.ingresoTime = null;
+        shiftState.ingresoTimestamp = null;
+        localStorage.setItem('afterlife_shift_state', JSON.stringify(shiftState));
+
+        updateFichajeUI();
+        renderHistory();
+        updateDashboardCharts();
+        alert(`Egreso registrado (${formatMinutesToHHMM(diffMinutes)} - ${(diffMinutes/60).toFixed(2)}h)`);
     }
 
-    function checkActiveShift() {
-        if (shiftStartTime) {
-            setupShiftSection.style.display = 'none';
-            activeShiftSection.style.display = 'block';
-            
-            let startDate = new Date(parseInt(shiftStartTime));
-            shiftStartInfo.textContent = `Ingreso: ${String(startDate.getHours()).padStart(2, '0')}:${String(startDate.getMinutes()).padStart(2, '0')}`;
-            
-            window.shiftInterval = setInterval(() => {
-                let now = Date.now();
-                let diffSeconds = Math.floor((now - parseInt(shiftStartTime)) / 1000);
-                
-                let hrs = Math.floor(diffSeconds / 3600);
-                let mins = Math.floor((diffSeconds % 3600) / 60);
-                let secs = diffSeconds % 60;
-                
-                timerDisplay.textContent = 
-                    (hrs < 10 ? "0" : "") + hrs + ":" +
-                    (mins < 10 ? "0" : "") + mins + ":" +
-                    (secs < 10 ? "0" : "") + secs;
-
-                updateDisplays();
-            }, 1000);
+    function updateFichajeUI() {
+        if (shiftState.ingresoTime) {
+            activeShiftInfo.textContent = `Turno en curso | Ingreso marcado: ${shiftState.ingresoTime}`;
         } else {
-            setupShiftSection.style.display = 'block';
-            activeShiftSection.style.display = 'none';
+            activeShiftInfo.textContent = "Sin turno activo. Listo para fichar.";
         }
-        updateDisplays();
     }
 
-    function startShift() {
-        let timeValue = startTimeInput.value;
-        if (!timeValue) {
-            alert("Por favor selecciona una hora de ingreso.");
-            return;
-        }
+    // --- CÁLCULO Y DIBUJO DE LOS ANILLOS DE PROGRESO ---
+    function updateDashboardCharts() {
+        const now = new Date();
+        const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
 
-        let [hours, minutes] = timeValue.split(':').map(Number);
-        let startDate = new Date();
-        startDate.setHours(hours, minutes, 0, 0);
+        // Calcular inicio de la semana (Lunes)
+        const dayOfWeek = now.getDay() || 7; // 1 = Lunes, 7 = Domingo
+        const startOfWeek = new Date(now);
+        startOfWeek.setDate(now.getDate() - (dayOfWeek - 1));
+        startOfWeek.setHours(0, 0, 0, 0);
+        const startOfWeekMs = startOfWeek.getTime();
 
-        shiftStartTime = startDate.getTime();
-        localStorage.setItem('afterlife_shift_start', shiftStartTime);
-        checkActiveShift();
-    }
+        // Inicio del Mes
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
 
-    function endShift() {
-        if (!shiftStartTime) return;
+        let hoyMins = 0;
+        let semanaMins = manualAdjustments.semana || 0;
+        let mesMins = manualAdjustments.mes || 0;
 
-        let now = Date.now();
-        let sessionSeconds = Math.floor((now - parseInt(shiftStartTime)) / 1000);
-        if (sessionSeconds < 0) sessionSeconds = 0;
-
-        totalAccumulatedSeconds += sessionSeconds;
-        localStorage.setItem('afterlife_total_seconds', totalAccumulatedSeconds);
-
-        let endDate = new Date(now);
-        let endString = `${String(endDate.getHours()).padStart(2, '0')}:${String(endDate.getMinutes()).padStart(2, '0')}`;
-
-        alert(`¡Turno finalizado!\nHora de salida: ${endString}\nTiempo de esta sesión: ${Math.floor(sessionSeconds/3600)}h ${Math.floor((sessionSeconds%3600)/60)}m`);
-
-        clearInterval(window.shiftInterval);
-        localStorage.removeItem('afterlife_shift_start');
-        shiftStartTime = null;
-        checkActiveShift();
-    }
-
-    // --- GUARDAR Y SEPARAR POR SEMANA ---
-    function loadHistory() {
-        let history = JSON.parse(localStorage.getItem('afterlife_history')) || [];
-        let table = document.getElementById('historyTable');
-        table.innerHTML = `<tr><th>Semana / Fecha</th><th>Tiempo Acumulado</th><th>Acción</th></tr>`;
-        
-        history.forEach((item, index) => {
-            let row = table.insertRow();
-            row.innerHTML = `<td>${item.date}</td><td>${item.time}</td><td><button class="btn btn-danger" style="padding: 2px 8px; font-size: 0.8rem;" onclick="deleteHistory(${index})">Eliminar</button></td>`;
+        shiftLogs.forEach(log => {
+            const logTime = log.timestamp || 0;
+            if (logTime >= startOfDay) hoyMins += log.durationMinutes;
+            if (logTime >= startOfWeekMs) semanaMins += log.durationMinutes;
+            if (logTime >= startOfMonth) mesMins += log.durationMinutes;
         });
-        updateDisplays();
-    }
 
-    function saveWeek() {
-        if (shiftStartTime) {
-            alert("Tienes un turno activo. Finalízalo antes de guardar la semana.");
-            return;
-        }
-        if (totalAccumulatedSeconds === 0) {
-            alert("No hay tiempo acumulado para guardar.");
-            return;
+        // Sumar turno activo si está en curso
+        if (shiftState.ingresoTimestamp) {
+            const activeMins = Math.max(0, Math.round((Date.now() - shiftState.ingresoTimestamp) / (1000 * 60)));
+            hoyMins += activeMins;
+            semanaMins += activeMins;
+            mesMins += activeMins;
         }
 
-        let hrs = Math.floor(totalAccumulatedSeconds / 3600);
-        let mins = Math.floor((totalAccumulatedSeconds % 3600) / 60);
-        let secs = totalAccumulatedSeconds % 60;
-        let timeString = `${hrs}h ${mins}m ${secs}s`;
+        // Actualizar UI Hoy
+        document.getElementById('textHoyMain').textContent = formatMinutesToHHMM(hoyMins);
+        document.getElementById('textHoySub').textContent = `${(hoyMins / 60).toFixed(2)}h`;
+        setCircleProgress('circleHoy', hoyMins, 7 * 60); // Meta ref diaria: 7h
+
+        // Actualizar UI Semana (META OBLIGATORIA DE 7.00 HORAS)
+        const metaSemanaMins = 7 * 60;
+        document.getElementById('textSemanaMain').textContent = formatMinutesToHHMM(semanaMins);
+        document.getElementById('textSemanaSub').textContent = `${(semanaMins / 60).toFixed(2)}h / 7h`;
+        setCircleProgress('circleSemana', semanaMins, metaSemanaMins);
+
+        // Actualizar UI Mes
+        document.getElementById('textMesMain').textContent = formatMinutesToHHMM(mesMins);
+        document.getElementById('textMesSub').textContent = `${(mesMins / 60).toFixed(2)}h`;
+        setCircleProgress('circleMes', mesMins, 30 * 60);
+
+        // Badge Decimal
+        const semanaDecimal = (semanaMins / 60).toFixed(2);
+        document.getElementById('semanaDecimalDisplay').textContent = `${semanaDecimal} horas`;
+
+        // Horas Faltantes
+        const faltantesMins = Math.max(0, metaSemanaMins - semanaMins);
+        const faltantesDecimal = (faltantesMins / 60).toFixed(2);
         
-        let now = new Date();
-        let dateString = `Semana del ${now.toLocaleDateString()}`;
-
-        let history = JSON.parse(localStorage.getItem('afterlife_history')) || [];
-        history.unshift({ date: dateString, time: timeString });
-        localStorage.setItem('afterlife_history', JSON.stringify(history));
-
-        totalAccumulatedSeconds = 0;
-        localStorage.setItem('afterlife_total_seconds', 0);
-
-        loadHistory();
-        alert("¡Progreso guardado en el historial con éxito!");
+        if (faltantesMins === 0) {
+            document.getElementById('faltantesDisplay').textContent = "¡Meta de 7h Completada! 🎉";
+            document.getElementById('faltantesDisplay').style.color = "#03dac6";
+        } else {
+            document.getElementById('faltantesDisplay').textContent = `${faltantesDecimal} hrs (${formatMinutesToHHMM(faltantesMins)})`;
+            document.getElementById('faltantesDisplay').style.color = "#ff8b9e";
+        }
     }
 
-    function deleteHistory(index) {
-        let history = JSON.parse(localStorage.getItem('afterlife_history')) || [];
-        history.splice(index, 1);
-        localStorage.setItem('afterlife_history', JSON.stringify(history));
-        loadHistory();
+    function setCircleProgress(elementId, currentMins, targetMins) {
+        const circle = document.getElementById(elementId);
+        if (!circle) return;
+
+        const maxOffset = 220; // Perímetro aproximado del círculo r=35
+        let percent = currentMins / targetMins;
+        if (percent > 1) percent = 1;
+
+        const offset = maxOffset - (percent * maxOffset);
+        circle.style.strokeDashoffset = offset;
     }
 
-    // Inicializar al cargar
-    checkActiveShift();
-    loadHistory();
+    function formatMinutesToHHMM(totalMinutes) {
+        const hrs = Math.floor(totalMinutes / 60);
+        const mins = totalMinutes % 60;
+        return String(hrs).padStart(2, '0') + ':' + String(mins).padStart(2, '0');
+    }
+
+    // --- EDICIÓN MANUAL DE HORAS ---
+    function abrirEdicionManual() {
+        const actualSemanaHours = ((manualAdjustments.semana || 0) / 60).toFixed(2);
+        const newHoursStr = prompt("Ajustar horas acumuladas para la semana actual (en formato decimal, ej: 2.75 o 5.5):", actualSemanaHours);
+        
+        if (newHoursStr === null) return;
+
+        const newHoursParsed = parseFloat(newHoursStr);
+        if (isNaN(newHoursParsed) || newHoursParsed < 0) {
+            alert("Por favor ingresa un número válido.");
+            return;
+        }
+
+        manualAdjustments.semana = Math.round(newHoursParsed * 60);
+        manualAdjustments.mes = manualAdjustments.semana; // Sincroniza si es necesario
+        localStorage.setItem('afterlife_manual_adjustments', JSON.stringify(manualAdjustments));
+
+        updateDashboardCharts();
+        alert("¡Horas ajustadas correctamente!");
+    }
+
+    // --- RENDERIZADO Y GESTIÓN DEL HISTORIAL ---
+    function renderHistory() {
+        const tbody = document.getElementById('fichajeHistoryBody');
+        tbody.innerHTML = '';
+
+        if (shiftLogs.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#888;">No hay turnos registrados</td></tr>`;
+            return;
+        }
+
+        shiftLogs.forEach((log, index) => {
+            const tr = document.createElement('tr');
+            const hhmm = formatMinutesToHHMM(log.durationMinutes);
+            const decimalHrs = (log.durationMinutes / 60).toFixed(2) + ' h';
+
+            tr.innerHTML = `
+                <td>${log.dateStr}</td>
+                <td><span style="color:#9fa8da;">${log.ingreso}</span> ➔ <span style="color:#ff8b9e;">${log.egreso}</span></td>
+                <td><strong>${hhmm}</strong></td>
+                <td><span class="decimal-badge" style="font-size:0.8rem; padding: 1px 6px;">${decimalHrs}</span></td>
+                <td><button class="btn btn-danger" style="padding: 2px 6px; font-size: 0.75rem;" onclick="eliminarFichaje(${index})">X</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function eliminarFichaje(index) {
+        if (confirm("¿Seguro que deseas eliminar este fichaje?")) {
+            shiftLogs.splice(index, 1);
+            localStorage.setItem('afterlife_shift_logs', JSON.stringify(shiftLogs));
+            renderHistory();
+            updateDashboardCharts();
+        }
+    }
+
+    // Actualizar dinámicamente si hay turno activo en segundo plano
+    setInterval(() => {
+        if (shiftState.ingresoTimestamp) {
+            updateDashboardCharts();
+        }
+    }, 30000);
+
+    // Carga Inicial
+    updateFichajeUI();
+    renderHistory();
+    updateDashboardCharts();
 </script>
 
 </body>
 </html>
+```
+
+### Cambios destacados que agregamos:
+1. **Fichaje por Ingreso y Egreso:** Puedes presionar **"Ingreso"** (en tono azul/morado) para iniciar y luego **"Egreso"** (en tono rojo/coral) para finalizar. Toma automáticamente la hora actual o la que indiques en el reloj.
+2. **Formato Decimal / Centesimal de Trabajo:** Calcula exactamente en formato decimal (ejemplo: **2.75 horas**) sincronizándolo con la lógica del juego.
+3. **Anillos de Progreso SVG (Hoy, Semana, Mes):**
+   - **Semana:** Diseñado específicamente con la **meta de 7.00 horas semanales**. Muestra cuántas llevas, cuántas te faltan e indica cuando completas la meta.
+4. **Edición Manual Práctica:** Con el botón *"Ajustar / Editar Horas Manualmente"* puedes ingresar directamente tus horas acumuladas en formato decimal si deseas corregirlas.
