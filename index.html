@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Afterlife</title>
+    <title>Precios Afterlife y Control de Horas</title>
     <style>
         :root {
             --card-bg: rgba(20, 20, 25, 0.88);
@@ -12,6 +12,10 @@
             --accent-hover: #9955e8;
             --teal-color: #03dac6;
             --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
@@ -35,7 +39,7 @@
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
             position: relative;
             z-index: 1;
@@ -50,28 +54,65 @@
         h1 {
             margin-bottom: 25px;
             text-shadow: 0 2px 10px rgba(0,0,0,0.9);
+            font-size: 2rem;
+            letter-spacing: 1px;
+        }
+
+        .section-divider {
+            border-top: 2px dashed rgba(187, 134, 252, 0.3);
+            margin: 35px 0 25px 0;
+            position: relative;
+            text-align: center;
+        }
+
+        .section-divider span {
+            background: rgba(15, 15, 20, 0.95);
+            color: var(--teal-color);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            position: relative;
+            top: -15px;
+            border: 1px solid var(--teal-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* GRID SUPERIOR DE COBRO (2 Columnas) */
+        .billing-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        /* GRID INFERIOR DE HORAS (2 Columnas o Fichaje separado) */
+        .hours-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 900px) {
+            .billing-grid, .hours-grid { 
+                grid-template-columns: 1fr; 
+            }
         }
 
         .card {
             background-color: var(--card-bg);
             backdrop-filter: blur(12px);
             border: 1px solid var(--border-color);
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 20px;
             box-shadow: 0 6px 25px rgba(0,0,0,0.7);
             margin-bottom: 20px;
-        }
-
-        /* LAYOUT SECCIÓN SUPERIOR: CALCULADORA Y TOTAL */
-        .top-section-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
-            align-items: start;
-        }
-
-        @media (max-width: 850px) {
-            .top-section-grid { grid-template-columns: 1fr; }
         }
 
         table {
@@ -81,7 +122,7 @@
         }
 
         th, td {
-            padding: 8px;
+            padding: 9px 8px;
             text-align: left;
             border-bottom: 1px solid var(--border-color);
             font-size: 0.9rem;
@@ -89,6 +130,7 @@
 
         th {
             color: var(--accent-color);
+            font-size: 0.95rem;
         }
 
         input[type="number"], input[type="time"] {
@@ -96,40 +138,40 @@
             background: rgba(30, 30, 35, 0.9);
             border: 1px solid var(--border-color);
             color: #fff;
-            border-radius: 4px;
+            border-radius: 6px;
             text-align: center;
         }
 
-        input[type="number"] { width: 55px; }
-        input[type="time"] { width: 110px; font-size: 1rem; color-scheme: dark; }
+        input[type="number"] { width: 60px; }
+        input[type="time"] { width: 120px; font-size: 1rem; color-scheme: dark; }
 
         .btn {
             background-color: var(--accent-color);
             color: #121212;
             border: none;
-            padding: 8px 16px;
+            padding: 9px 18px;
             font-weight: bold;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s;
         }
 
         .btn:hover {
             background-color: var(--teal-color);
-            box-shadow: 0 0 10px rgba(3, 218, 198, 0.4);
+            box-shadow: 0 0 12px rgba(3, 218, 198, 0.5);
         }
 
         .btn-ingreso {
             background-color: #388e3c;
             color: #fff;
         }
-        .btn-ingreso:hover { background-color: #4caf50; }
+        .btn-ingreso:hover { background-color: #4caf50; box-shadow: 0 0 10px rgba(76, 175, 80, 0.5); }
 
         .btn-egreso {
             background-color: #d32f2f;
             color: #fff;
         }
-        .btn-egreso:hover { background-color: #f44336; }
+        .btn-egreso:hover { background-color: #f44336; box-shadow: 0 0 10px rgba(244, 67, 54, 0.5); }
 
         .btn-danger {
             background-color: #cf6679;
@@ -140,26 +182,15 @@
         .total-section {
             text-align: center;
             border: 2px solid var(--accent-color);
+            background: rgba(25, 20, 35, 0.92);
         }
 
         .total-amount {
             font-size: 2.8rem;
             color: var(--teal-color);
             font-weight: bold;
-            margin: 15px 0;
-            text-shadow: 0 0 12px rgba(3, 218, 198, 0.5);
-        }
-
-        /* LAYOUT SECCIÓN INFERIOR: REGISTRO Y PROGRESO DE HORAS */
-        .bottom-hours-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            align-items: start;
-        }
-
-        @media (max-width: 850px) {
-            .bottom-hours-grid { grid-template-columns: 1fr; }
+            margin: 10px 0;
+            text-shadow: 0 0 15px rgba(3, 218, 198, 0.6);
         }
 
         /* ANILLOS DE PROGRESO CIRCULAR */
@@ -231,21 +262,16 @@
             margin: 0 auto;
         }
 
-        .section-divider {
-            border-top: 1px solid var(--border-color);
-            margin: 30px 0 20px 0;
-        }
-
         .note {
             font-size: 0.85rem;
             color: #ccc;
-            margin-top: 25px;
+            margin-top: 20px;
             text-align: center;
             font-style: italic;
             text-shadow: 0 1px 3px rgba(0,0,0,0.9);
         }
 
-        /* --- MODAL PERSONALIZADA --- */
+        /* --- MODAL PERSONALIZADA ESTILO AFTERLIFE --- */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -274,8 +300,8 @@
             border-radius: 12px;
             padding: 25px;
             width: 90%;
-            max-width: 400px;
-            box-shadow: 0 0 30px rgba(187, 134, 252, 0.3);
+            max-width: 420px;
+            box-shadow: 0 0 30px rgba(187, 134, 252, 0.35);
             text-align: center;
             transform: scale(0.9);
             transition: transform 0.25s ease;
@@ -287,7 +313,7 @@
 
         .modal-title {
             color: var(--accent-color);
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             margin-bottom: 12px;
             font-weight: bold;
         }
@@ -301,7 +327,7 @@
 
         .modal-input {
             width: 80%;
-            padding: 8px;
+            padding: 10px;
             margin-top: 10px;
             background: rgba(10, 10, 15, 0.9);
             border: 1px solid var(--accent-color);
@@ -328,48 +354,76 @@
 <div class="container">
     <h1>PRECIOS AFTERLIFE Y CONTROL DE HORAS</h1>
 
-    <!-- 1. SECCIÓN SUPERIOR: GESTIÓN DE VENTAS -->
-    <div class="top-section-grid">
-        <!-- Calculadora de Cobro -->
+    <!-- SECCIÓN 1: TODO LO DE PRECIOS Y COBRO (ARRIBA) -->
+    <div class="billing-grid">
+        
+        <!-- Izquierda Superior: Lista de Precios -->
         <div class="card">
-            <h2>Calculadora de Cobro</h2>
-            <p style="font-size: 0.85rem; text-align: center; margin-bottom: 12px;">Selecciona la cantidad de ítems:</p>
+            <h2>Lista de Precios</h2>
             <table>
-                <tr><th>Ítem</th><th>Precio</th><th>Cant.</th></tr>
-                <tr><td>Rep. Básica</td><td>$150</td><td><input type="number" class="item-calc" data-price="150" value="0" min="0"></td></tr>
-                <tr><td>Rep. Full</td><td>$1000</td><td><input type="number" class="item-calc" data-price="1000" value="0" min="0"></td></tr>
-                <tr><td>Ganzúa Normal</td><td>$350</td><td><input type="number" class="item-calc" data-price="350" value="0" min="0"></td></tr>
-                <tr><td>Ganzúa Avanzada</td><td>$500</td><td><input type="number" class="item-calc" data-price="500" value="0" min="0"></td></tr>
-                <tr><td>Kit de Placas</td><td>Placa vieja + propina</td><td>-</td></tr>
-                <tr><td>Paño Microfibra</td><td>$150</td><td><input type="number" class="item-calc" data-price="150" value="0" min="0"></td></tr>
-                <tr><td>Kit Rep. Normal</td><td>$250</td><td><input type="number" class="item-calc" data-price="250" value="0" min="0"></td></tr>
-                <tr><td>Kit Rep. Avanzado</td><td>$700</td><td><input type="number" class="item-calc" data-price="700" value="0" min="0"></td></tr>
-                <tr><td>Gato</td><td>$300</td><td><input type="number" class="item-calc" data-price="300" value="0" min="0"></td></tr>
-                <tr><td>Neumáticos Drift/Norm.</td><td>$350</td><td><input type="number" class="item-calc" data-price="350" value="0" min="0"></td></tr>
-                <tr><td>Puerta / Capot / Baúl / Neum.</td><td>$30</td><td><input type="number" class="item-calc" data-price="30" value="0" min="0"></td></tr>
-                <tr><td>Piezas Separadas</td><td>$300</td><td><input type="number" class="item-calc" data-price="300" value="0" min="0"></td></tr>
+                <tr><th>Concepto</th><th>Precio</th></tr>
+                <tr><td>Reparación básica (1 motor, 3 carrocería)</td><td>$150</td></tr>
+                <tr><td>Reparación full</td><td>$1000</td></tr>
+                <tr><td>Ganzúa normal</td><td>$350</td></tr>
+                <tr><td>Ganzúa avanzada (Materiales +)</td><td>$500</td></tr>
+                <tr><td>Kit de placas</td><td>Placa vieja + propina</td></tr>
+                <tr><td>Paño de microfibra</td><td>$150</td></tr>
+                <tr><td>Kit de reparación normal</td><td>$250</td></tr>
+                <tr><td>Kit de reparación avanzado</td><td>$700</td></tr>
+                <tr><td>Gato</td><td>$300</td></tr>
+                <tr><td>Neumáticos de drift/normales (c/u)</td><td>$350</td></tr>
+                <tr><td>Puertas, neumático, capot, baúl (c/u)</td><td>$30</td></tr>
+                <tr><td>Piezas separadas (c/u) <br><small>embrague, radiador, tanque, frenos, transmisión</small></td><td>$300</td></tr>
             </table>
         </div>
 
-        <!-- Total a Transferir / Cobrar -->
-        <div class="card total-section">
-            <h3>Total a Transferir / Cobrar</h3>
-            <div class="total-amount" id="totalDisplay">$0</div>
-            <button class="btn" onclick="resetForm()">Reiniciar Calculadora</button>
+        <!-- Derecha Superior: Calculadora y Total a Cobrar -->
+        <div>
+            <!-- Total a Transferir / Cobrar -->
+            <div class="card total-section">
+                <h3>Total a Transferir / Cobrar</h3>
+                <div class="total-amount" id="totalDisplay">$0</div>
+                <button class="btn" onclick="resetForm()">Reiniciar Calculadora</button>
+            </div>
+
+            <!-- Calculadora de Cobro -->
+            <div class="card">
+                <h2>Calculadora de Cobro</h2>
+                <p style="font-size: 0.85rem; text-align: center; margin-bottom: 12px; color: #aaa;">Selecciona la cantidad de ítems:</p>
+                <table>
+                    <tr><th>Ítem</th><th>Precio</th><th>Cant.</th></tr>
+                    <tr><td>Rep. Básica</td><td>$150</td><td><input type="number" class="item-calc" data-price="150" value="0" min="0"></td></tr>
+                    <tr><td>Rep. Full</td><td>$1000</td><td><input type="number" class="item-calc" data-price="1000" value="0" min="0"></td></tr>
+                    <tr><td>Ganzúa Normal</td><td>$350</td><td><input type="number" class="item-calc" data-price="350" value="0" min="0"></td></tr>
+                    <tr><td>Ganzúa Avanzada</td><td>$500</td><td><input type="number" class="item-calc" data-price="500" value="0" min="0"></td></tr>
+                    <tr><td>Paño Microfibra</td><td>$150</td><td><input type="number" class="item-calc" data-price="150" value="0" min="0"></td></tr>
+                    <tr><td>Kit Rep. Normal</td><td>$250</td><td><input type="number" class="item-calc" data-price="250" value="0" min="0"></td></tr>
+                    <tr><td>Kit Rep. Avanzado</td><td>$700</td><td><input type="number" class="item-calc" data-price="700" value="0" min="0"></td></tr>
+                    <tr><td>Gato</td><td>$300</td><td><input type="number" class="item-calc" data-price="300" value="0" min="0"></td></tr>
+                    <tr><td>Neumáticos Drift/Norm.</td><td>$350</td><td><input type="number" class="item-calc" data-price="350" value="0" min="0"></td></tr>
+                    <tr><td>Puerta / Capot / Baúl / Neum.</td><td>$30</td><td><input type="number" class="item-calc" data-price="30" value="0" min="0"></td></tr>
+                    <tr><td>Piezas Separadas</td><td>$300</td><td><input type="number" class="item-calc" data-price="300" value="0" min="0"></td></tr>
+                </table>
+            </div>
         </div>
+
     </div>
 
-    <div class="section-divider"></div>
+    <!-- SEPARADOR VISUAL -->
+    <div class="section-divider">
+        <span>Control de Horas y Registro</span>
+    </div>
 
-    <!-- 2. SECCIÓN INFERIOR: REGISTRO Y CONTROL DE HORAS -->
-    <div class="bottom-hours-grid">
-        <!-- Fichaje de Turno -->
-        <div class="card">
+    <!-- SECCIÓN 2: TODO LO DEL CONTROL DE HORAS (ESTRICTAMENTE ABAJO DE TODO) -->
+    <div class="hours-grid">
+
+        <!-- Fichaje de Turno (Ingreso / Egreso) -->
+        <div class="card full-width">
             <h2>Fichaje de Turno (Ingreso / Egreso)</h2>
-            <p style="font-size: 0.85rem; text-align: center; color: #aaa;">Selecciona la hora manualmente o se tomará la hora actual del clic:</p>
+            <p style="font-size: 0.85rem; text-align: center; color: #aaa; margin-bottom: 12px;">Selecciona la hora manualmente o se tomará la hora exacta del clic:</p>
             
             <div style="text-align: center; margin: 15px 0;">
-                <label style="font-size: 0.9rem; margin-right: 8px;">Hora:</label>
+                <label style="font-size: 0.95rem; margin-right: 8px;">Hora:</label>
                 <input type="time" id="shiftTimeInput">
             </div>
 
@@ -557,6 +611,7 @@
     setInputTimeNow();
 
     let activeShiftStart = localStorage.getItem('afterlife_active_shift_start') || null;
+    let liveTimerInterval = null;
 
     function updateShiftStatusDisplay() {
         if (activeShiftStart) {
@@ -565,6 +620,20 @@
             shiftStatus.textContent = `Turno en curso | Ingreso marcado: ${startFormatted}`;
         } else {
             shiftStatus.textContent = `Sin turno activo. Marca Ingreso para comenzar.`;
+        }
+    }
+
+    function startLiveTimer() {
+        if (liveTimerInterval) clearInterval(liveTimerInterval);
+        liveTimerInterval = setInterval(() => {
+            renderAllData();
+        }, 3000); // Actualiza la gráfica e indicadores en tiempo real cada 3 segundos
+    }
+
+    function stopLiveTimer() {
+        if (liveTimerInterval) {
+            clearInterval(liveTimerInterval);
+            liveTimerInterval = null;
         }
     }
 
@@ -587,7 +656,9 @@
         activeShiftStart = startDate.getTime();
         localStorage.setItem('afterlife_active_shift_start', activeShiftStart);
         updateShiftStatusDisplay();
-        showModal({ title: "Ingreso Registrado", body: `Turno iniciado con éxito a las <strong>${timeVal}</strong>.` });
+        startLiveTimer();
+        renderAllData();
+        showModal({ title: "Ingreso Registrado", body: `Turno iniciado con éxito a las <strong>${timeVal}</strong>. ¡El contador y los gráficos se irán llenando en tiempo real!` });
     }
 
     function registrarEgreso() {
@@ -633,6 +704,7 @@
 
         localStorage.removeItem('afterlife_active_shift_start');
         activeShiftStart = null;
+        stopLiveTimer();
         updateShiftStatusDisplay();
 
         let hrs = Math.floor(diffMinutes / 60);
@@ -642,7 +714,7 @@
         renderAllData();
         showModal({
             title: "Egreso Registrado",
-            body: `Turno finalizado.<br>Tiempo registrado: <strong>${hrs}h ${mins}m (${decHrs} hrs)</strong>.`
+            body: `Turno finalizado.<br>Tiempo consolidado: <strong>${hrs}h ${mins}m (${decHrs} hrs)</strong>.`
         });
     }
 
@@ -663,6 +735,15 @@
         let totalWeekMinutes = manualWeekMinutes;
         let totalTodayMinutes = 0;
         let totalMonthMinutes = 0;
+
+        // Calcular tiempo transcurrido en vivo si hay turno activo
+        let liveActiveMinutes = 0;
+        if (activeShiftStart) {
+            let elapsedMs = Date.now() - parseInt(activeShiftStart);
+            if (elapsedMs > 0) {
+                liveActiveMinutes = elapsedMs / (1000 * 60); // Minutos precisos con decimales
+            }
+        }
 
         let tbody = document.getElementById('historyTableBody');
         tbody.innerHTML = '';
@@ -695,37 +776,42 @@
             `;
         });
 
+        // Sumar el tiempo activo en vivo a los contadores acumulados
+        let effectiveTodayMinutes = totalTodayMinutes + liveActiveMinutes;
+        let effectiveWeekMinutes = totalWeekMinutes + liveActiveMinutes;
+        let effectiveMonthMinutes = totalMonthMinutes + liveActiveMinutes;
+
         // HOY
-        let todayHrs = Math.floor(totalTodayMinutes / 60);
-        let todayMins = totalTodayMinutes % 60;
-        let todayDec = (totalTodayMinutes / 60).toFixed(2);
+        let todayHrs = Math.floor(effectiveTodayMinutes / 60);
+        let todayMins = Math.floor(effectiveTodayMinutes % 60);
+        let todayDec = (effectiveTodayMinutes / 60).toFixed(2);
         document.getElementById('textTodayHHMM').textContent = `${String(todayHrs).padStart(2,'0')}:${String(todayMins).padStart(2,'0')}`;
         document.getElementById('textTodayDec').textContent = `${todayDec}h`;
-        setCircleProgress('circleToday', (totalTodayMinutes / (7 * 60)) * 100);
+        setCircleProgress('circleToday', (effectiveTodayMinutes / (7 * 60)) * 100);
 
         // SEMANA (Meta 7 horas = 420 minutos)
-        let weekHrs = Math.floor(totalWeekMinutes / 60);
-        let weekMins = totalWeekMinutes % 60;
-        let weekDec = (totalWeekMinutes / 60).toFixed(2);
+        let weekHrs = Math.floor(effectiveWeekMinutes / 60);
+        let weekMins = Math.floor(effectiveWeekMinutes % 60);
+        let weekDec = (effectiveWeekMinutes / 60).toFixed(2);
         document.getElementById('textWeekHHMM').textContent = `${String(weekHrs).padStart(2,'0')}:${String(weekMins).padStart(2,'0')}`;
         document.getElementById('textWeekDec').textContent = `${weekDec}h / 7h`;
-        setCircleProgress('circleWeek', (totalWeekMinutes / 420) * 100);
+        setCircleProgress('circleWeek', (effectiveWeekMinutes / 420) * 100);
 
         // MES
-        let monthHrs = Math.floor(totalMonthMinutes / 60);
-        let monthMins = totalMonthMinutes % 60;
-        let monthDec = (totalMonthMinutes / 60).toFixed(2);
+        let monthHrs = Math.floor(effectiveMonthMinutes / 60);
+        let monthMins = Math.floor(effectiveMonthMinutes % 60);
+        let monthDec = (effectiveMonthMinutes / 60).toFixed(2);
         document.getElementById('textMonthHHMM').textContent = `${String(monthHrs).padStart(2,'0')}:${String(monthMins).padStart(2,'0')}`;
         document.getElementById('textMonthDec').textContent = `${monthDec}h`;
-        setCircleProgress('circleMonth', (totalMonthMinutes / (30 * 60)) * 100);
+        setCircleProgress('circleMonth', (effectiveMonthMinutes / (30 * 60)) * 100);
 
         // DISPLAY TOTAL Y RESTANTE
         document.getElementById('decimalTotalDisplay').textContent = `${weekDec} horas`;
 
-        let remainingMinutes = 420 - totalWeekMinutes;
+        let remainingMinutes = 420 - effectiveWeekMinutes;
         if (remainingMinutes > 0) {
             let remHrs = Math.floor(remainingMinutes / 60);
-            let remMins = remainingMinutes % 60;
+            let remMins = Math.floor(remainingMinutes % 60);
             let remDec = (remainingMinutes / 60).toFixed(2);
             document.getElementById('remainingWeekDisplay').textContent = 
                 `Faltan para la meta semanal (7h): ${remDec} hrs (${String(remHrs).padStart(2,'0')}:${String(remMins).padStart(2,'0')})`;
@@ -761,6 +847,9 @@
 
     // Inicialización al cargar la página
     updateShiftStatusDisplay();
+    if (activeShiftStart) {
+        startLiveTimer();
+    }
     renderAllData();
 </script>
 
