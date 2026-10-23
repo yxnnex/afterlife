@@ -137,6 +137,18 @@
         }
         .btn-danger:hover { background-color: #ff8b9e; }
 
+        .btn-small {
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--accent-color);
+            border: 1px solid var(--border-color);
+        }
+        .btn-small:hover {
+            background-color: var(--accent-color);
+            color: #121212;
+        }
+
         .total-section {
             text-align: center;
             border: 2px solid var(--accent-color);
@@ -326,7 +338,7 @@
     </video>
 
 <div class="container">
-    <h1>AFTERLIFE</h1>
+    <h1>PRECIOS AFTERLIFE Y CONTROL DE HORAS</h1>
 
     <!-- 1. SECCIÓN SUPERIOR: GESTIÓN DE VENTAS -->
     <div class="top-section-grid">
@@ -366,11 +378,12 @@
         <!-- Fichaje de Turno -->
         <div class="card">
             <h2>Fichaje de Turno (Ingreso / Egreso)</h2>
-            <p style="font-size: 0.85rem; text-align: center; color: #aaa;">Selecciona la hora manualmente o se tomará la hora actual del clic:</p>
+            <p style="font-size: 0.85rem; text-align: center; color: #aaa;">La hora se sincroniza en tiempo real. Puedes cambiarla manualmente si lo deseas:</p>
             
-            <div style="text-align: center; margin: 15px 0;">
-                <label style="font-size: 0.9rem; margin-right: 8px;">Hora:</label>
+            <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin: 15px 0;">
+                <label style="font-size: 0.9rem;">Hora:</label>
                 <input type="time" id="shiftTimeInput">
+                <button class="btn btn-small" onclick="forceTimeNow()">⏱ Hora Actual</button>
             </div>
 
             <div style="display: flex; gap: 15px; justify-content: center;">
@@ -546,15 +559,28 @@
         overlay.classList.add('active');
     }
 
-    // --- LÓGICA DE FICHAJE Y CONTROL DE HORAS ---
+    // --- LÓGICA DE FICHAJE CON RELOJ DINÁMICO AUTO-ACTUALIZABLE ---
     const shiftTimeInput = document.getElementById('shiftTimeInput');
     const shiftStatus = document.getElementById('shiftStatus');
+    let userHasManuallyEditedTime = false;
 
-    function setInputTimeNow() {
+    // Detectar si el usuario modifica el input de tiempo para congelar la actualización automática temporalmente
+    shiftTimeInput.addEventListener('input', () => {
+        userHasManuallyEditedTime = true;
+    });
+
+    function forceTimeNow() {
         const now = new Date();
         shiftTimeInput.value = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+        userHasManuallyEditedTime = false;
     }
-    setInputTimeNow();
+
+    // Actualizar la hora visible automáticamente cada segundo salvo que la estés editando
+    setInterval(() => {
+        if (!userHasManuallyEditedTime) {
+            forceTimeNow();
+        }
+    }, 1000);
 
     let activeShiftStart = localStorage.getItem('afterlife_active_shift_start') || null;
 
@@ -562,7 +588,7 @@
         if (activeShiftStart) {
             const startDate = new Date(parseInt(activeShiftStart));
             const startFormatted = String(startDate.getHours()).padStart(2, '0') + ':' + String(startDate.getMinutes()).padStart(2, '0');
-            shiftStatus.textContent = `Turno en curso (se actualiza automáticamente) | Ingreso: ${startFormatted}`;
+            shiftStatus.textContent = `Turno en curso (avanzando en vivo) | Ingreso: ${startFormatted}`;
         } else {
             shiftStatus.textContent = `Sin turno activo. Marca Ingreso para comenzar.`;
         }
@@ -586,9 +612,10 @@
 
         activeShiftStart = startDate.getTime();
         localStorage.setItem('afterlife_active_shift_start', activeShiftStart);
+        userHasManuallyEditedTime = false; // reanudar reloj dinámico
         updateShiftStatusDisplay();
         renderAllData();
-        showModal({ title: "Ingreso Registrado", body: `Turno iniciado a las <strong>${timeVal}</strong>. ¡El progreso avanzará automáticamente en vivo!` });
+        showModal({ title: "Ingreso Registrado", body: `Turno iniciado a las <strong>${timeVal}</strong>. ¡Tu tiempo ya está avanzando en vivo!` });
     }
 
     function registrarEgreso() {
@@ -597,12 +624,12 @@
             return;
         }
 
-        let timeVal = shiftTimeInput.value;
-        if (!timeVal) {
-            showModal({ title: "Atención", body: "Por favor selecciona una hora de egreso." });
-            return;
+        // Si la hora del campo no fue modificada manualmente, forzar que sea exactamente el instante real del clic
+        if (!userHasManuallyEditedTime) {
+            forceTimeNow();
         }
 
+        let timeVal = shiftTimeInput.value;
         let [h, m] = timeVal.split(':').map(Number);
         let endDate = new Date();
         endDate.setHours(h, m, 0, 0);
@@ -610,8 +637,11 @@
         let startTimestamp = parseInt(activeShiftStart);
         let endTimestamp = endDate.getTime();
 
+        // Garantizar que la salida sea posterior a la entrada (incluso si la pestaña se dejó abierta mucho tiempo)
         if (endTimestamp <= startTimestamp) {
-            endTimestamp += 24 * 60 * 60 * 1000;
+            endTimestamp = Date.now(); // tomar el instante exacto actual si hubo desincronización
+            const now = new Date(endTimestamp);
+            timeVal = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
         }
 
         let diffMs = endTimestamp - startTimestamp;
@@ -634,6 +664,7 @@
 
         localStorage.removeItem('afterlife_active_shift_start');
         activeShiftStart = null;
+        userHasManuallyEditedTime = false; // reanudar reloj dinámico
         updateShiftStatusDisplay();
 
         let hrs = Math.floor(diffMinutes / 60);
@@ -697,7 +728,7 @@
             `;
         });
 
-        // SUMAR EL TIEMPO DEL TURNO EN CURSO SI ESTÁ ACTIVO
+        // SUMAR EL TIEMPO DEL TURNO EN CURSO SI ESTÁ ACTIVO (AVANZA EN VIVO)
         if (activeShiftStart) {
             let activeDiffMinutes = Math.floor((Date.now() - parseInt(activeShiftStart)) / 60000);
             if (activeDiffMinutes > 0) {
@@ -771,10 +802,11 @@
         });
     }
 
-    // Inicialización y actualización automática en tiempo real cada 5 segundos
+    // Inicialización y refresco automático
+    forceTimeNow();
     updateShiftStatusDisplay();
     renderAllData();
-    setInterval(renderAllData, 5000);
+    setInterval(renderAllData, 3000); // Refrescar los gráficos en vivo cada 3 segundos
 </script>
 
 </body>
